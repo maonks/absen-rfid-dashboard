@@ -74,24 +74,29 @@ func CreateAbsen(db *gorm.DB) fiber.Handler {
 			Waktu:    req.Waktu,
 		})
 
-		// BARU return response
 		return c.SendStatus(200)
 	}
 }
 
 func SearchAbsen(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-
-		var result []models.RealTime
+		var rows []models.RealTime
 
 		db.Raw(`
-				SELECT absens.uid, kartus.nama, absens.device_id, absens.waktu
-				FROM absens
-				LEFT JOIN kartus ON kartus.uid = absens.uid
-				WHERE DATE(absens.waktu) BETWEEN ? AND ?
-				ORDER BY absens.waktu DESC
-				`, c.Query("start"), c.Query("end")).Scan(&result)
+		SELECT
+			absens.uid,
+			kartus.nama,
+			absens.device_id,
+			absens.waktu
+		FROM absens
+		LEFT JOIN kartus ON kartus.uid = absens.uid
+		ORDER BY absens.waktu DESC
+		LIMIT 50
+	`).Scan(&rows)
 
-		return c.JSON(result)
+		return c.Render("table", fiber.Map{
+			"Rows": rows,
+		})
 	}
+
 }

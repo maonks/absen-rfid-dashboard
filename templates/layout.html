@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Absensi RFID</title>
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+  <div id="modal"></div>
+  <div class="max-w-6xl mx-auto p-6">
+    {{ template "content" . }}
+  </div>
+</body>
+<div id="modal"></div>
+</html>
+
+
+<script>
+  function closeModal() {
+    document.getElementById("modal").innerHTML = "";
+    htmx.ajax("GET", "/api/absen/table", "#table");
+  }
+</script>
+
+
+
+<script>
+  const ws = new WebSocket("ws://localhost:8000/websocket");
+
+  ws.onopen = () => {
+    console.log("⚡ WS connected");
+  };
+
+  ws.onmessage = (event) => {
+    console.log("📡 Realtime update", event.data);
+
+    // Trigger HTMX reload table
+    htmx.ajax("GET", "/api/absen/table", "#table");
+
+    // reload device status
+    htmx.ajax("GET", "/api/device-status", "#device-status");
+  };
+
+  ws.onclose = () => {
+    console.log("❌ WS disconnected");
+  };
+</script>

@@ -1,0 +1,62 @@
+<table class="w-full text-sm border border-gray-200 rounded-lg overflow-hidden">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="p-3 text-center w-12">No</th>
+      <th class="p-3 text-center">Nama</th>
+      <th class="p-3 text-center">UID</th>
+      <th class="p-3 text-center">Device</th>
+      <th class="p-3 text-center">Waktu</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {{ range $i, $r := .Rows }}
+    <tr class="border-t hover:bg-gray-50 transition">
+      <!-- NO -->
+      <td class="p-3 text-center font-medium">
+        {{ add $i 1 }}
+      </td>
+
+      <!-- NAMA -->
+      <td class="p-3 text-center font-medium">
+        {{ $r.Nama }}
+
+        {{ if eq $r.Nama "PENDING" }}
+          <button
+            type="button"
+            hx-get="/api/kartu/{{ $r.Uid }}/edit"
+            hx-target="#modal"
+            hx-swap="innerHTML"
+            class="ml-2 text-blue-600 text-sm underline"
+          >
+            ✏️ Edit
+          </button>
+        {{ end }}
+      </td>
+
+      <!-- UID -->
+      <td class="p-3 text-center font-mono text-gray-700">
+        {{ $r.Uid }}
+      </td>
+
+      <!-- DEVICE -->
+      <td class="p-3 text-center">
+        <span class="px-2 py-0.5 text-xs rounded bg-blue-100 text-blue-700">
+          {{ $r.DeviceId }}
+        </span>
+      </td>
+
+      <!-- WAKTU -->
+      <td class="p-3 text-center text-gray-600">
+        {{ $r.Waktu }}
+      </td>
+    </tr>
+  {{ else }}
+    <tr>
+      <td colspan="5" class="p-6 text-center text-gray-500">
+        ❌ Tidak ada data absensi
+      </td>
+    </tr>
+  {{ end }}
+  </tbody>
+</table>

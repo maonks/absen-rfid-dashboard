@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/maonks/absen-rfid-backend/controllers"
 	"gorm.io/gorm"
 )
 
@@ -13,4 +14,6 @@ func DeviceRoute(app *fiber.App, db *gorm.DB) {
 	app.Post("/test", func(c *fiber.Ctx) error {
 		return c.SendStatus(200)
 	})
+	app.Get("/api/device-status", controllers.DeviceStatus(db))
+
 }

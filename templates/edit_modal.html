@@ -1,0 +1,38 @@
+<div class="fixed inset-0 bg-black/40 flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow p-6 w-96">
+
+    <h2 class="text-lg font-bold mb-4">✏️ Edit Nama Siswa</h2>
+
+    <form
+      hx-post="/api/kartu/{{ .Uid }}"
+      hx-trigger="submit"
+      hx-on="htmx:afterRequest: closeModal()"
+    >
+      <input
+        type="text"
+        name="nama"
+        required
+        placeholder="Nama siswa"
+        class="w-full border p-2 rounded mb-4"
+      />
+
+      <div class="flex justify-end gap-2">
+        <button
+          type="button"
+          onclick="closeModal()"
+          class="px-4 py-2 bg-gray-200 rounded"
+        >
+          Batal
+        </button>
+
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          Simpan
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>

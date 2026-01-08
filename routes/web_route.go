@@ -6,6 +6,9 @@ import (
 	"github.com/maonks/absen-rfid-backend/controllers"
 )
 
-func WebSocketRoute(app *fiber.App) {
+func WebRoutes(app *fiber.App) {
+
+	app.Get("/", controllers.Dashboard)
 	app.Get("/websocket", websocket.New(controllers.WebsocketHandler))
+
 }

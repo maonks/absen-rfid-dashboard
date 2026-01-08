@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 	"github.com/maonks/absen-rfid-backend/configs"
 	"github.com/maonks/absen-rfid-backend/routes"
@@ -18,12 +19,17 @@ func main() {
 		log.Println(".ENV Tidak di temukan")
 	}
 
-	app := fiber.New()
+	engine := html.New("./templates", ".html")
 
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:5173",
-		AllowHeaders: "Origin, Content-Type, Accept",
-	}))
+	engine.AddFunc("add", func(a, b int) int {
+		return a + b
+	})
+
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
+
+	app.Use(cors.New())
 
 	db, err := configs.KonekDB()
 
@@ -32,8 +38,8 @@ func main() {
 	}
 
 	routes.DeviceRoute(app, db)
-	routes.WebSocketRoute(app)
 	routes.AbsenRoute(app, db)
+	routes.WebRoutes(app)
 
 	app.Listen("" + os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT") + "")
 }

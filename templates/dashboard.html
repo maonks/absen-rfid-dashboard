@@ -1,0 +1,38 @@
+{{ define "content" }}
+
+<div class="bg-white rounded-xl shadow p-6 space-y-4">
+
+  <!-- HEADER -->
+  <div>
+    <h1 class="text-2xl font-bold">📡 Dashboard Absensi RFID</h1>
+    <p class="text-sm text-gray-500">
+    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspCopyright 2026 maonks
+    </p>
+  </div>
+
+  <div
+  id="device-status"
+  hx-get="/api/device-status"
+  hx-trigger="load"
+  class="flex gap-2 mb-4"
+  >
+  ⏳ Memuat status device...
+</div>
+
+
+  <!-- TABLE AREA -->
+<div id="table">
+  <div
+    hx-get="/api/absen/table"
+    hx-trigger="load"
+    hx-target="#table"
+    hx-swap="innerHTML"
+    class="text-gray-500"
+  >
+    ⏳ Memuat data...
+  </div>
+</div>
+
+</div>
+
+{{ end }}

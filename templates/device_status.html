@@ -1,0 +1,11 @@
+{{ range . }}
+  {{ if .Online }}
+    <span class="px-3 py-1 text-sm rounded bg-green-100 text-green-700">
+      🟢 {{ .DeviceId }} ONLINE
+    </span>
+  {{ else }}
+    <span class="px-3 py-1 text-sm rounded bg-red-100 text-red-700">
+      🔴 {{ .DeviceId }} OFFLINE
+    </span>
+  {{ end }}
+{{ end }}
