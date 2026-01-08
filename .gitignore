@@ -1,0 +1,13 @@
+#Env
+.Env
+
+#Go
+/bin
+/vendor
+*.exe
+
+#Editor
+.vscode/
+
+#OS
+.DS_store
