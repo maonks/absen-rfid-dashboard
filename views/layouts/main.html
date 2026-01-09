@@ -1,9 +1,9 @@
-
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Absensi RFID</title>
 
   <!-- HTMX -->
@@ -15,172 +15,133 @@
 
 <body class="bg-slate-100" hx-boost="false">
 
-<div class="flex min-h-screen">
+<!-- ================= MOBILE HEADER ================= -->
+<header class="md:hidden fixed top-0 left-0 right-0 z-50
+               h-14 bg-slate-900 text-white
+               flex items-center px-4 shadow">
 
-      <!-- SIDEBAR -->
-      <aside
-        id="sidebar"
-        class="bg-slate-900 text-white
-              w-56
-              min-h-screen
-              flex flex-col
-              relative"
-      >
+  <button
+    onclick="toggleSidebar()"
+    class="text-xl mr-3"
+  >
+    ☰
+  </button>
 
-        <!-- LOGO / HEADER -->
-        <div class="p-4 text-lg font-bold text-center border-b border-slate-700">
-          📡 Absensi RFID
-        </div>
+  <span class="font-semibold">Absensi RFID</span>
+</header>
 
-        <!-- MENU -->
-        <nav class="flex-1 mt-4 space-y-1">
+<!-- ================= LAYOUT WRAPPER ================= -->
+<div class="flex min-h-screen pt-14 md:pt-0">
 
-          <a
-            href="/"
-            hx-boost="false"
-            class="flex items-center gap-3 px-4 py-3
-                  text-white
-                  hover:bg-slate-700 transition"
-          >
-            <span class="text-lg">🏠</span>
-            <span>Monitoring</span>
-          </a>
+  <!-- ================= SIDEBAR ================= -->
+  <aside
+    id="sidebar"
+    class="fixed md:static inset-y-0 left-0 z-40
+           w-56 bg-slate-900 text-white
+           transform -translate-x-full md:translate-x-0
+           transition-transform duration-300
+           flex flex-col"
+  >
 
-          <a
-            href="/riwayat"
-            hx-boost="false"
-            class="flex items-center gap-3 px-4 py-3
-                  text-white
-                  hover:bg-slate-700 transition"
-          >
-            <span class="text-lg">👨‍🎓</span>
-            <span>Riwayat Absensi</span>
-          </a>
+    <!-- HEADER -->
+    <div class="p-4 text-lg font-bold text-center border-b border-slate-700">
+      📡 Absensi RFID
+    </div>
 
-          <a
-            href="/absensi"
-            hx-boost="false"
-            class="flex items-center gap-3 px-4 py-3
-                  text-white
-                  hover:bg-slate-700 transition"
-          >
-            <span class="text-lg">📊</span>
-            <span>Detail Absensi</span>
-          </a>
+    <!-- MENU -->
+    <nav class="flex-1 mt-4 space-y-1">
 
-        </nav>
+      <a href="/" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-700 transition">
+        <span class="text-lg">🏠</span>
+        <span>Monitoring</span>
+      </a>
 
-        <!-- FOOTER -->
-        <div class="p-3 text-xs text-center text-slate-400 border-t border-slate-700">
-          © 2026 RFID System
-        </div>
+      <a href="/riwayat" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-700 transition">
+        <span class="text-lg">👨‍🎓</span>
+        <span>Riwayat Absensi</span>
+      </a>
 
-      </aside>
+      <a href="/absensi" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-700 transition">
+        <span class="text-lg">📊</span>
+        <span>Detail Absensi</span>
+      </a>
 
+    </nav>
 
     <!-- FOOTER -->
-    <div class="p-3 text-xs text-center text-slate-400">
-      <span class="hidden group-hover:block">
-        © 2026 RFID System
-      </span>
+    <div class="p-3 text-xs text-center text-slate-400 border-t border-slate-700">
+      © 2026 RFID System
     </div>
+
   </aside>
 
-  <!-- Untuk main embed page nya -->
-<main class="flex-1 p-6">
+  <!-- ================= OVERLAY MOBILE ================= -->
+  <div
+    id="overlay"
+    onclick="toggleSidebar()"
+    class="fixed inset-0 bg-black/40 z-30 hidden md:hidden"
+  ></div>
 
-  
-  <div class="flex justify-between items-center mb-4">    
-    <!-- KIRI -->
-    <div>
-      <h1 class="text-2xl font-bold">📡 Dashboard Absensi RFID</h1>
-      <p class="text-sm text-gray-500">
-        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp© 2026 maonks
-      </p>
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1 p-4 md:p-6">
+
+    <!-- HEADER CONTENT -->
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
+
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold">
+          📡 Dashboard Absensi RFID
+        </h1>
+        <p class="text-sm text-gray-500">
+          © 2026 maonks
+        </p>
+      </div>
+
+      <div
+        id="device-status"
+        hx-get="/api/device-status"
+        hx-trigger="load"
+        class="flex gap-2"
+      >
+        ⏳ Memuat status device...
+      </div>
+
     </div>
 
-    <!-- KANAN -->
-    <div
-      id="device-status"
-      hx-get="/api/device-status"
-      hx-trigger="load"
-      class="flex gap-2"
-    >
-      ⏳ Memuat status device...
+    <!-- CONTENT -->
+    <div class="bg-white rounded-xl shadow p-4 md:p-6 space-y-4">
+      {{ embed }}
     </div>
 
-  </div>
-
-  
-<div class="bg-white rounded-xl shadow p-6 space-y-4">
-
-  {{ embed }}
+  </main>
 
 </div>
 
-
-
-</main>
-
-</div>
-
-<!-- untuk edit nama -->
+<!-- MODAL -->
 <div id="modal"></div>
 
+<!-- ================= SCRIPT ================= -->
 <script>
-      function closeModal() {
-        const modal = document.getElementById("modal");
-        if (modal) modal.innerHTML = "";
-      }
+  function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const overlay = document.getElementById("overlay");
+
+    sidebar.classList.toggle("-translate-x-full");
+    overlay.classList.toggle("hidden");
+  }
 </script>
 
 <script>
-      // const ws = new WebSocket("ws://192.168.1.100:8000/websocket");
-         const ws = new WebSocket("ws://wan2.adamulti.com:8000/websocket");
+  const ws = new WebSocket("ws://wan2.adamulti.com:8000/websocket");
 
-      ws.onopen = () => {
-        console.log("✅ WS CONNECTED");
-      };
+  ws.onmessage = () => {
+    const absenTable = document.getElementById("absen-table");
+    if (absenTable) htmx.trigger(absenTable, "reload");
 
-      ws.onmessage = (e) => {
-        const absenTable = document.getElementById("absen-table");
-        if (absenTable) {
-          htmx.trigger(absenTable, "reload");
-        }
-
-        const kehadiran = document.getElementById("kehadiran-wrapper");
-        if (kehadiran) {
-          htmx.trigger(kehadiran, "reload");
-        }
-      };
-
-      ws.onclose = () => {
-        console.log("🔴 WS CLOSED");
-      };
+    const kehadiran = document.getElementById("kehadiran-wrapper");
+    if (kehadiran) htmx.trigger(kehadiran, "reload");
+  };
 </script>
-
-<!-- <script>
-      const sidebar = document.getElementById("sidebar");
-      const pinBtn = document.getElementById("pinBtn");
-
-      // load state
-      const pinned = localStorage.getItem("sidebarPinned") === "true";
-      sidebar.dataset.pinned = pinned;
-
-      // toggle pin
-      pinBtn.addEventListener("click", () => {
-        const isPinned = sidebar.dataset.pinned === "true";      
-
-        sidebar.dataset.pinned = !isPinned;
-        localStorage.setItem("sidebarPinned", !isPinned);
-
-         pinBtn.textContent = sidebar.dataset.pinned === "true" ? "⮜⮜" : "⮞⮞";           
-
-      });
-      
-      
-</script> -->
-
 
 </body>
 </html>

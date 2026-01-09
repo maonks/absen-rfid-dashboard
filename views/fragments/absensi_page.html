@@ -1,43 +1,114 @@
+<!-- TABLE WRAPPER -->
+<div class="overflow-x-auto md:overflow-visible">
 
-  <table class="w-full text-sm text-center border border-gray-200 rounded-lg overflow-hidden">
-      <thead class="bg-gray-100">
-          <tr>
-            <th class="p-3 text-center">No</th>
-            <th class="p-3 text-center">Nama</th>
-            <th class="p-3 text-center">Tanggal</th>
-            <th class="p-3 text-center">Masuk</th>
-            <th class="p-3 text-center">Pulang</th>
-            <th class="p-3 text-center">Terlambat</th>
-            <th class="p-3 text-center">Pulang Cepat</th>
-            <th class="p-3 text-center">Overtime</th>
-            <th class="p-3 text-center">Durasi</th>
-          </tr>
-        </thead>
+<table
+  class="min-w-full
+         text-[11px] md:text-sm
+         text-center
+         border border-gray-200
+         rounded-lg overflow-hidden">
 
-        <tbody>
-          {{ range $i, $r := .Rows }}          
-              <tr class="border-t hover:bg-gray-50 transition">
-                      <!-- NO -->
-                <td class="p-3 text-center font-medium">
-                  {{ add $i 1 }}
-                </td>
-                <td class="p-3 text-center font-medium">{{ .Nama }}</td>
-                <td class="p-3 text-center font-medium">{{ .Tanggal }}</td>
-                <td class="p-3 text-center font-medium">{{ .Masuk }}</td>
-                <td class="p-3 text-center font-medium">{{ .Pulang }}</td>
+  <thead class="bg-gray-100 text-gray-700">
+    <tr>
+      <th class="py-2 px-2 md:p-3 w-10">No</th>
 
-                <td class="p-3 text-center font-medium text-red-600 font-semibold">{{ .Terlambat }}</td>
-                <td class="p-3 text-center font-medium text-orange-600 font-semibold">{{ .PulangCepat }}</td>
-                <td class="p-3 text-center font-medium text-green-600 font-semibold">{{ .Lembur }}</td>
-                <td class="p-3 text-center font-medium font-semibold">{{ .JamKerja }}</td>
-              </tr>
-          {{ else }}          
-              <tr>
-                <td colspan="8" class="p-6 text-slate-500">
-                  Tidak ada data perhitungan
-                </td>
-              </tr>
-          {{ end }}
-        </tbody>
-  </table>
+      <th class="py-2 px-2 md:p-3">
+        Nama
+      </th>
 
+      <th class="py-2 px-2 md:p-3">
+        Tanggal
+      </th>
+
+      <th class="py-2 px-2 md:p-3">
+        Masuk
+      </th>
+
+      <th class="py-2 px-2 md:p-3">
+        Pulang
+      </th>
+
+      <!-- HIDDEN DI MOBILE -->
+      <th class="hidden md:table-cell py-2 px-2 md:p-3">
+        Terlambat
+      </th>
+
+      <th class="hidden md:table-cell py-2 px-2 md:p-3">
+        Pulang Cepat
+      </th>
+
+      <th class="hidden md:table-cell py-2 px-2 md:p-3">
+        Overtime
+      </th>
+
+      <th class="hidden md:table-cell py-2 px-2 md:p-3">
+        Durasi
+      </th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{ range $i, $r := .Rows }}
+    <tr class="border-t hover:bg-gray-50 transition">
+
+      <!-- NO -->
+      <td class="py-1.5 px-2 md:p-3 font-medium">
+        {{ add $i 1 }}
+      </td>
+
+      <!-- NAMA -->
+      <td class="py-1.5 px-2 md:p-3 font-medium whitespace-nowrap">
+        {{ .Nama }}
+      </td>
+
+      <!-- TANGGAL -->
+      <td class="py-1.5 px-2 md:p-3 whitespace-nowrap">
+        {{ .Tanggal }}
+      </td>
+
+      <!-- MASUK -->
+      <td class="py-1.5 px-2 md:p-3 whitespace-nowrap">
+        {{ .Masuk }}
+      </td>
+
+      <!-- PULANG -->
+      <td class="py-1.5 px-2 md:p-3 whitespace-nowrap">
+        {{ .Pulang }}
+      </td>
+
+      <!-- TERLAMBAT (DESKTOP) -->
+      <td class="hidden md:table-cell py-1.5 px-2 md:p-3
+                 text-red-600 font-semibold">
+        {{ .Terlambat }}
+      </td>
+
+      <!-- PULANG CEPAT (DESKTOP) -->
+      <td class="hidden md:table-cell py-1.5 px-2 md:p-3
+                 text-orange-600 font-semibold">
+        {{ .PulangCepat }}
+      </td>
+
+      <!-- OVERTIME (DESKTOP) -->
+      <td class="hidden md:table-cell py-1.5 px-2 md:p-3
+                 text-green-600 font-semibold">
+        {{ .Lembur }}
+      </td>
+
+      <!-- DURASI (DESKTOP) -->
+      <td class="hidden md:table-cell py-1.5 px-2 md:p-3 font-semibold">
+        {{ .JamKerja }}
+      </td>
+    </tr>
+
+    {{ else }}
+    <tr>
+      <td colspan="9" class="py-6 text-center text-slate-500">
+        Tidak ada data perhitungan
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+
+</table>
+
+</div>
