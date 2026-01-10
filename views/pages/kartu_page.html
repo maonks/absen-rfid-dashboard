@@ -22,6 +22,7 @@
           <th class="py-2 px-2 md:p-3 w-10 text-center">No</th>
           <th class="py-2 px-2 md:p-3 text-left">UID</th>
           <th class="py-2 px-2 md:p-3 text-left">Pemilik</th>
+          <th class="py-2 px-2 md:p-3 text-center">Waktu</th>
           <th class="py-2 px-2 md:p-3 text-center">Status</th>
         </tr>
       </thead>
@@ -51,6 +52,11 @@
                 FREE
               </span>
             {{ end }}
+          </td>
+
+          <!-- WAKTU TAP AWAL -->
+          <td class="py-1.5 px-2 md:p-3 text-center font-mono text-gray-800">
+            {{ $r.Waktu.Format "02-01-2006 15:04:11" }}
           </td>
 
           <!-- STATUS -->

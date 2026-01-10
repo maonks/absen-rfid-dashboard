@@ -1,53 +1,73 @@
-<div class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+<div class="fixed inset-0 z-50 bg-black/50 flex">
 
-  <div class="bg-white w-full max-w-2xl mx-3
-              rounded-lg shadow-lg p-4">
+  <!-- MODAL CONTAINER -->
+  <div class="bg-white w-full md:max-w-2xl md:mx-auto
+              md:my-6
+              flex flex-col
+              rounded-none md:rounded-lg
+              shadow-lg">
 
-    <h3 class="text-sm font-semibold mb-3">
-      ➕ Tambah Siswa
-    </h3>
+    <!-- HEADER (STICKY) -->
+    <div class="flex items-center justify-between
+                px-4 py-3
+                border-b
+                sticky top-0 bg-white z-10">
+      <h3 class="text-sm md:text-base font-semibold">
+        ➕ Tambah Siswa
+      </h3>
+      <button
+        type="button"
+        onclick="closeModal()"
+        class="text-gray-500 text-xl leading-none"
+      >
+        ✕
+      </button>
+    </div>
 
+    <!-- FORM -->
     <form
       hx-post="/siswa/store"
       hx-target="#modal"
       hx-swap="innerHTML"
-      class="grid grid-cols-1 md:grid-cols-2 gap-3
-             text-[11px] md:text-sm"
+      class="flex-1 overflow-y-auto
+             px-4 py-3
+             grid grid-cols-1 md:grid-cols-2
+             gap-3
+             text-[12px] md:text-sm"
     >
 
       <!-- NIS -->
       <div>
         <label class="block text-gray-600 mb-1">NIS</label>
-        <input name="nis" required
-               class="w-full border rounded px-3 py-2 font-mono">
+        <input
+          name="nis"
+          required
+          class="w-full border rounded-md px-3 py-2 font-mono"
+        >
       </div>
 
       <!-- NAMA -->
       <div>
         <label class="block text-gray-600 mb-1">Nama</label>
-        <input name="nama" required
-               class="w-full border rounded px-3 py-2">
+        <input
+          name="nama"
+          required
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
-      <!-- 🔥 KARTU RFID (BARU) -->
+      <!-- KARTU RFID -->
       <div>
-        <label class="block text-gray-600 mb-1">
-          Kartu RFID
-        </label>
-
+        <label class="block text-gray-600 mb-1">Kartu RFID</label>
         <select
           name="kartu_id"
-          class="w-full border rounded px-3 py-2 font-mono"
+          class="w-full border rounded-md px-3 py-2 font-mono"
         >
           <option value="">-- Pilih Kartu --</option>
-
           {{ range .KartuKosong }}
-          <option value="{{ .ID }}">
-            {{ .UID }}
-          </option>
+          <option value="{{ .ID }}">{{ .UID }}</option>
           {{ end }}
         </select>
-
         <p class="text-[10px] text-gray-400 mt-1">
           Hanya kartu yang belum terdaftar ke siswa
         </p>
@@ -56,8 +76,10 @@
       <!-- JENIS KELAMIN -->
       <div>
         <label class="block text-gray-600 mb-1">Jenis Kelamin</label>
-        <select name="jenis_kelamin"
-                class="w-full border rounded px-3 py-2">
+        <select
+          name="jenis_kelamin"
+          class="w-full border rounded-md px-3 py-2"
+        >
           <option value="L">Laki-laki</option>
           <option value="P">Perempuan</option>
         </select>
@@ -66,74 +88,103 @@
       <!-- TEMPAT LAHIR -->
       <div>
         <label class="block text-gray-600 mb-1">Tempat Lahir</label>
-        <input name="tempat_lahir"
-               class="w-full border rounded px-3 py-2">
+        <input
+          name="tempat_lahir"
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
       <!-- TANGGAL LAHIR -->
       <div>
         <label class="block text-gray-600 mb-1">Tanggal Lahir</label>
-        <input type="date" name="tanggal_lahir"
-               class="w-full border rounded px-3 py-2">
+        <input
+          type="date"
+          name="tanggal_lahir"
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
       <!-- KELAS -->
       <div>
         <label class="block text-gray-600 mb-1">Kelas</label>
-        <input name="kelas"
-               class="w-full border rounded px-3 py-2">
+        <input
+          name="kelas"
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
       <!-- JURUSAN -->
       <div>
         <label class="block text-gray-600 mb-1">Jurusan</label>
-        <input name="jurusan"
-               class="w-full border rounded px-3 py-2">
+        <input
+          name="jurusan"
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
       <!-- ALAMAT -->
       <div class="md:col-span-2">
         <label class="block text-gray-600 mb-1">Alamat</label>
-        <textarea name="alamat"
-                  class="w-full border rounded px-3 py-2"></textarea>
+        <textarea
+          name="alamat"
+          rows="2"
+          class="w-full border rounded-md px-3 py-2"
+        ></textarea>
       </div>
 
       <!-- NAMA WALI -->
       <div>
         <label class="block text-gray-600 mb-1">Nama Wali</label>
-        <input name="nama_wali"
-               class="w-full border rounded px-3 py-2">
+        <input
+          name="nama_wali"
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
       <!-- NO HP -->
       <div>
         <label class="block text-gray-600 mb-1">No HP</label>
-        <input name="no_hp"
-               class="w-full border rounded px-3 py-2">
+        <input
+          name="no_hp"
+          class="w-full border rounded-md px-3 py-2"
+        >
       </div>
 
       <!-- STATUS -->
       <div>
         <label class="block text-gray-600 mb-1">Status</label>
-        <select name="status"
-                class="w-full border rounded px-3 py-2">
+        <select
+          name="status"
+          class="w-full border rounded-md px-3 py-2"
+        >
           <option value="aktif">Aktif</option>
           <option value="nonaktif">Nonaktif</option>
         </select>
       </div>
 
-      <!-- ACTION -->
-      <div class="md:col-span-2 flex justify-end gap-2 pt-2">
+      <!-- FOOTER ACTION (STICKY) -->
+      <div class="md:col-span-2
+                  sticky bottom-0 bg-white
+                  pt-3 pb-2
+                  border-t
+                  flex flex-col md:flex-row
+                  gap-2">
         <button
           type="button"
           onclick="closeModal()"
-          class="px-3 py-2 text-gray-600"
+          class="w-full md:w-auto
+                 px-4 py-2
+                 border rounded-md
+                 text-gray-600"
         >
           Batal
         </button>
         <button
           type="submit"
-          class="px-4 py-2 bg-green-600 text-white rounded"
+          class="w-full md:w-auto
+                 px-4 py-2
+                 bg-green-600 text-white
+                 rounded-md"
         >
           Simpan
         </button>

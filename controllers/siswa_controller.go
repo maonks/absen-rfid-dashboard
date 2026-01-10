@@ -75,65 +75,80 @@ func StoreSiswa(db *gorm.DB) fiber.Handler {
 
 // GET /siswa/:id/edit
 func EditSiswa(db *gorm.DB) fiber.Handler {
-
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
 
 		var siswa models.Siswa
-		if err := db.First(&siswa, id).Error; err != nil {
+		if err := db.Preload("Kartu").First(&siswa, id).Error; err != nil {
 			return c.Status(404).SendString("Siswa tidak ditemukan")
 		}
 
-		var kartuKosong []models.Kartu
-		db.Where("siswa_id IS NULL").Find(&kartuKosong)
+		// ambil kartu FREE
+		var kartuFree []models.Kartu
+		db.Where("siswa_id IS NULL").Find(&kartuFree)
+
+		// gabungkan: kartu aktif + kartu free
+		var kartuPilihan []models.Kartu
+
+		if siswa.Kartu != nil {
+			kartuPilihan = append(kartuPilihan, *siswa.Kartu)
+		}
+		kartuPilihan = append(kartuPilihan, kartuFree...)
 
 		return c.Render("components/edit_siswa", fiber.Map{
-			"Siswa":       siswa,
-			"KartuKosong": kartuKosong,
+			"Siswa":        siswa,
+			"KartuPilihan": kartuPilihan,
+			"KartuAktif":   siswa.Kartu,
 		})
 	}
 }
 
 // POST /siswa/:id/update
 func UpdateSiswa(db *gorm.DB) fiber.Handler {
-
 	return func(c *fiber.Ctx) error {
-
 		id := c.Params("id")
 
-		tgl, _ := time.Parse("2006-01-02", c.FormValue("tanggal_lahir"))
-
-		if err := db.Model(&models.Siswa{}).
-			Where("id = ?", id).
-			Updates(models.Siswa{
-				NIS:          c.FormValue("nis"),
-				Nama:         c.FormValue("nama"),
-				JenisKelamin: c.FormValue("jenis_kelamin"),
-				TempatLahir:  c.FormValue("tempat_lahir"),
-				TanggalLahir: tgl,
-				Kelas:        c.FormValue("kelas"),
-				Jurusan:      c.FormValue("jurusan"),
-				Alamat:       c.FormValue("alamat"),
-				NamaWali:     c.FormValue("nama_wali"),
-				NoHP:         c.FormValue("no_hp"),
-				Status:       c.FormValue("status"),
-			}).Error; err != nil {
-			return c.Status(400).SendString("Gagal update siswa")
+		var siswa models.Siswa
+		if err := db.Preload("Kartu").First(&siswa, id).Error; err != nil {
+			return c.Status(404).SendString("Siswa tidak ditemukan")
 		}
 
-		// 🔥 jika kartu dipilih → update kartu
 		kartuID := c.FormValue("kartu_id")
+
+		// 1️⃣ lepaskan kartu lama
+		if siswa.Kartu != nil {
+			db.Model(&models.Kartu{}).
+				Where("id = ?", siswa.Kartu.ID).
+				Update("siswa_id", nil)
+		}
+
+		// 2️⃣ assign kartu baru (jika ada)
 		if kartuID != "" {
 			db.Model(&models.Kartu{}).
 				Where("id = ?", kartuID).
-				Update("siswa_id", id)
+				Update("siswa_id", siswa.ID)
 		}
 
+		// 3️⃣ update data siswa
+		db.Model(&siswa).Updates(map[string]interface{}{
+			"nis":           c.FormValue("nis"),
+			"nama":          c.FormValue("nama"),
+			"jenis_kelamin": c.FormValue("jenis_kelamin"),
+			"kelas":         c.FormValue("kelas"),
+			"jurusan":       c.FormValue("jurusan"),
+			"alamat":        c.FormValue("alamat"),
+			"nama_wali":     c.FormValue("nama_wali"),
+			"no_hp":         c.FormValue("no_hp"),
+			"status":        c.FormValue("status"),
+		})
+
 		return c.SendString(`
-		<script>
-			closeModal();
-			location.reload();
-		</script>
-	`)
+			<div class="p-4 text-center text-green-600">
+				✅ Data siswa berhasil diperbarui
+			</div>
+			<script>
+				setTimeout(() => location.reload(), 800)
+			</script>
+		`)
 	}
 }

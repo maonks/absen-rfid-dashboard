@@ -94,36 +94,41 @@ func HomeRow(db *gorm.DB) fiber.Handler {
 
 		db.Raw(`
 			WITH daily AS (
-			  SELECT
-			    k.uid,
-			    k.nama,
-			    MIN(a.waktu) AS masuk,
-			    MAX(
-			      CASE
-			        WHEN a.waktu::time >= '16:00:00'
-			        THEN a.waktu
-			      END
-			    ) AS pulang
-			  FROM absens a
-			  JOIN kartus k ON k.uid = a.uid
-			  WHERE DATE(a.waktu) = CURRENT_DATE
-			    AND k.uid = ?
-			  GROUP BY k.uid, k.nama
+			SELECT
+				k.uid,
+				s.nama,
+				MIN(a.waktu) AS masuk,
+				MAX(
+				CASE
+					WHEN a.waktu::time >= '16:00:00'
+					THEN a.waktu
+				END
+				) AS pulang
+			FROM absens a
+			JOIN kartus k
+				ON k.uid = a.uid
+			LEFT JOIN siswas s
+				ON s.id = k.siswa_id
+			WHERE a.waktu >= date_trunc('day', now())
+				AND a.waktu < date_trunc('day', now()) + interval '1 day'
+				AND k.uid = ?
+			GROUP BY k.uid, s.nama
 			)
 			SELECT
-			  uid,
-			  nama,
-			  to_char(masuk, 'HH24:MI:SS') AS masuk,
-			  CASE
-			    WHEN pulang IS NOT NULL
-			      THEN to_char(pulang, 'HH24:MI:SS')
-			    ELSE NULL
-			  END AS pulang,
-			  CASE
-			    WHEN pulang IS NULL THEN 'MASUK'
-			    ELSE 'PULANG'
-			  END AS status
+			uid,
+			COALESCE(nama, 'Belum Terdaftar') AS nama,
+			to_char(masuk, 'HH24:MI:SS') AS masuk,
+			CASE
+				WHEN pulang IS NOT NULL
+				THEN to_char(pulang, 'HH24:MI:SS')
+				ELSE NULL
+			END AS pulang,
+			CASE
+				WHEN pulang IS NULL THEN 'MASUK'
+				ELSE 'PULANG'
+			END AS status
 			FROM daily
+
 		`, uid).Scan(&row)
 
 		// jika row belum ada (tap pertama)
