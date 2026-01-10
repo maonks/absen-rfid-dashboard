@@ -12,6 +12,7 @@ func WebRoutes(app *fiber.App, db *gorm.DB) {
 
 	app.Get("/websocket", websocket.New(apicontroller.WebsocketHandler))
 
+	app.Get("/login", apicontroller.Login(db))
 	app.Get("/", webcontroller.HomePage(db))
 
 	app.Get("/absensi", webcontroller.AbsensiPage(db))

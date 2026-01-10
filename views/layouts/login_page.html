@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Absensi RFID</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* ===== CARD ANIMATION ===== */
+    @keyframes fadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-fade-slide {
+      animation: fadeSlide 0.6s ease-out both;
+    }
+
+    /* ===== BACKGROUND GRADIENT ===== */
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animated-bg {
+      background: linear-gradient(
+        -45deg,
+        #020617,
+        #0f172a,
+        #020617,
+        #1e293b
+      );
+      background-size: 400% 400%;
+      animation: gradientMove 18s ease infinite;
+    }
+
+    /* ===== FLOATING DOTS ===== */
+    @keyframes floatUp {
+      from {
+        transform: translateY(0);
+        opacity: 0.35;
+      }
+      to {
+        transform: translateY(-120vh);
+        opacity: 0;
+      }
+    }
+
+    .dot {
+      position: absolute;
+      bottom: -12px;
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 9999px;
+      animation: floatUp linear infinite;
+    }
+
+    .d18 { animation-duration: 18s; }
+    .d20 { animation-duration: 20s; }
+    .d22 { animation-duration: 22s; }
+    .d24 { animation-duration: 24s; }
+    .d26 { animation-duration: 26s; }
+    .d28 { animation-duration: 28s; }
+  </style>
+</head>
+
+<body class="min-h-screen animated-bg relative overflow-hidden
+             flex items-center justify-center px-4">
+
+  <!-- FLOATING DOTS -->
+  <div class="absolute inset-0 pointer-events-none">
+    <span class="dot d18 left-[10%]"></span>
+    <span class="dot d22 left-[25%]"></span>
+    <span class="dot d20 left-[40%]"></span>
+    <span class="dot d26 left-[55%]"></span>
+    <span class="dot d24 left-[70%]"></span>
+    <span class="dot d28 left-[85%]"></span>
+  </div>
+
+  <!-- LOGIN CARD -->
+  <div class="relative z-10 w-full max-w-sm
+              bg-white
+              rounded-xl
+              shadow-xl
+              p-6
+              animate-fade-slide">
+
+    <!-- HEADER -->
+    <div class="text-center mb-6">
+      <div class="text-3xl mb-2">📡</div>
+      <h1 class="text-lg font-semibold text-slate-800">
+        Absensi RFID
+      </h1>
+      <p class="text-xs text-slate-500">
+        Silakan login untuk melanjutkan
+      </p>
+    </div>
+
+    <!-- FORM -->
+    <form method="post" action="/login" class="space-y-4">
+
+      <!-- USERNAME -->
+      <div>
+        <label class="block text-xs text-slate-600 mb-1">
+          Username
+        </label>
+        <input
+          type="text"
+          name="username"
+          required
+          autofocus
+          placeholder="Masukkan username"
+          class="w-full
+                 rounded-lg
+                 border border-slate-300
+                 px-4 py-2.5
+                 text-sm
+                 focus:outline-none
+                 focus:ring-2
+                 focus:ring-slate-800"
+        >
+      </div>
+
+      <!-- PASSWORD -->
+      <div>
+        <label class="block text-xs text-slate-600 mb-1">
+          Password
+        </label>
+        <input
+          type="password"
+          name="password"
+          required
+          placeholder="••••••••"
+          class="w-full
+                 rounded-lg
+                 border border-slate-300
+                 px-4 py-2.5
+                 text-sm
+                 focus:outline-none
+                 focus:ring-2
+                 focus:ring-slate-800"
+        >
+      </div>
+
+      <!-- SUBMIT -->
+      <button
+        type="submit"
+        class="w-full
+               bg-slate-900
+               hover:bg-slate-800
+               text-white
+               py-2.5
+               rounded-lg
+               text-sm
+               font-medium
+               transition
+               active:scale-[0.97]"
+      >
+        🔐 Login
+      </button>
+
+    </form>
+
+    <!-- FOOTER -->
+    <div class="text-center mt-5 text-[11px] text-slate-400">
+      © 2026
+      <a
+        href="https://github.com/maonks"
+        target="_blank"
+        rel="noopener"
+        class="hover:underline hover:text-slate-600"
+      >
+        maonks
+      </a>
+    </div>
+
+  </div>
+
+</body>
+</html>
