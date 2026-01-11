@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/maonks/absen-rfid-backend/models"
+	"github.com/maonks/absen-rfid-backend/utils"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +14,7 @@ func SiswaPage(db *gorm.DB) fiber.Handler {
 		var siswa []models.Siswa
 		db.Find(&siswa)
 
-		return c.Render("pages/siswa_page", fiber.Map{
+		return utils.Render(c, "pages/siswa_page", fiber.Map{
 			"Siswa": siswa,
 		}, "layouts/main")
 	}
@@ -26,7 +27,7 @@ func CreateSiswa(db *gorm.DB) fiber.Handler {
 
 		db.Where("siswa_id IS NULL").Find(&kartuKosong)
 
-		return c.Render("components/tambah_siswa", fiber.Map{
+		return utils.Render(c, "modals/tambah_siswa", fiber.Map{
 			"KartuKosong": kartuKosong,
 		})
 	}
@@ -95,7 +96,7 @@ func EditSiswa(db *gorm.DB) fiber.Handler {
 		}
 		kartuPilihan = append(kartuPilihan, kartuFree...)
 
-		return c.Render("components/edit_siswa", fiber.Map{
+		return utils.Render(c, "modals/edit_siswa", fiber.Map{
 			"Siswa":        siswa,
 			"KartuPilihan": kartuPilihan,
 			"KartuAktif":   siswa.Kartu,

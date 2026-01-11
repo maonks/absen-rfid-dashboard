@@ -19,7 +19,7 @@ func KonekDB() (*gorm.DB, error) {
 		log.Fatal("Gagal Konek DB", err)
 	}
 
-	db.AutoMigrate(&models.Absen{}, &models.Device{}, &models.Kartu{}, &models.Siswa{})
+	db.AutoMigrate(&models.User{}, &models.Absen{}, &models.Device{}, &models.Kartu{}, &models.Siswa{})
 
 	return db, err
 }

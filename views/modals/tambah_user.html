@@ -1,0 +1,88 @@
+<!-- OVERLAY -->
+<div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+
+  <!-- MODAL -->
+  <div
+    class="bg-white w-full max-w-lg mx-4
+           rounded-lg shadow-xl
+           flex flex-col
+           max-h-[90vh]"
+  >
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between
+                px-4 py-3 border-b">
+      <div>
+        <h3 class="text-sm font-semibold">➕ Tambah User</h3>
+        <p class="text-[11px] text-gray-500">
+          Tambahkan akun administrator / operator
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onclick="closeModal()"
+        class="text-xl text-gray-400 hover:text-gray-600"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- BODY -->
+    <form
+      hx-post="/admin/users/store"
+      hx-target="#modal"
+      hx-swap="innerHTML"
+      class="flex-1 overflow-y-auto
+             px-4 py-4 grid gap-3
+             text-[12px]"
+    >
+
+      <div>
+        <label class="block text-gray-600 mb-1">Nama Lengkap</label>
+        <input name="nama" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label class="block text-gray-600 mb-1">Username</label>
+        <input name="username" required class="w-full border rounded px-3 py-2 font-mono">
+      </div>
+
+      <div>
+        <label class="block text-gray-600 mb-1">Password</label>
+        <input type="password" name="password" required class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label class="block text-gray-600 mb-1">Jabatan</label>
+        <input name="jabatan" class="w-full border rounded px-3 py-2">
+      </div>
+
+      <div>
+        <label class="block text-gray-600 mb-1">Role</label>
+        <select name="role" class="w-full border rounded px-3 py-2">
+          <option value="admin">Admin</option>
+          <option value="operator">Operator</option>
+          <option value="viewer">Viewer</option>
+        </select>
+      </div>
+
+      <div class="pt-4 flex gap-2">
+        <button type="button"
+                onclick="closeModal()"
+                class="w-full border rounded py-2 hover:bg-gray-50">
+          Batal
+        </button>
+
+        <button type="submit"
+                class="w-full bg-green-600 text-white
+                       rounded py-2 hover:bg-green-700">
+          Simpan
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

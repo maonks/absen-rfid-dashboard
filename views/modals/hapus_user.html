@@ -1,0 +1,35 @@
+<div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+
+  <div class="bg-white w-full max-w-sm mx-4
+              rounded-lg shadow-xl p-4">
+
+    <h3 class="text-sm font-semibold text-red-600 mb-2">
+      ⚠️ Hapus User
+    </h3>
+
+    <p class="text-xs text-gray-600 mb-4">
+      Yakin ingin menghapus akun
+      <strong>{{ .User.Username }}</strong>?
+    </p>
+
+    <div class="flex gap-2">
+      <button onclick="closeModal()"
+              class="w-full border rounded py-2">
+        Batal
+      </button>
+
+      <form
+        hx-post="/admin/users/{{ .User.ID }}/destroy"
+        hx-target="body"
+        hx-swap="none"
+        class="w-full"
+      >
+        <button type="submit"
+                class="w-full bg-red-600 text-white rounded py-2">
+          Hapus
+        </button>
+      </form>
+    </div>
+
+  </div>
+</div>

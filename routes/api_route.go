@@ -8,6 +8,7 @@ import (
 
 func AbsenRoute(app *fiber.App, db *gorm.DB) {
 
+	//endpoin yang di hit sama device
 	app.Post("/api/absen", webcontroller.CreateAbsen(db))
 
 	//ini yang nampilkan hasil tap

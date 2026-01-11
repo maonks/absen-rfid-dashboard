@@ -2,6 +2,7 @@ package webcontroller
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/maonks/absen-rfid-backend/utils"
 	"gorm.io/gorm"
 )
 
@@ -62,7 +63,7 @@ func AbsensiPage(db *gorm.DB) fiber.Handler {
 			ORDER BY tanggal DESC, nama
 		`).Scan(&rows)
 
-		return c.Render("pages/absensi_page", fiber.Map{
+		return utils.Render(c, "pages/absensi_page", fiber.Map{
 			"Title": "Perhitungan Kehadiran",
 			"Rows":  rows,
 		}, "layouts/main")

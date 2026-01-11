@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/maonks/absen-rfid-backend/utils"
 	"gorm.io/gorm"
 )
 
@@ -36,7 +37,7 @@ func KartuPage(db *gorm.DB) fiber.Handler {
 			ORDER BY k.created_at DESC
 		`).Scan(&rows)
 
-		return c.Render("pages/kartu_page", fiber.Map{
+		return utils.Render(c, "pages/kartu_page", fiber.Map{
 			"Rows": rows,
 		}, "layouts/main")
 	}

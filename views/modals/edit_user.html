@@ -1,0 +1,50 @@
+<div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+
+  <div class="bg-white w-full max-w-lg mx-4
+              rounded-lg shadow-xl flex flex-col">
+
+    <div class="flex justify-between items-center px-4 py-3 border-b">
+      <h3 class="text-sm font-semibold">✏️ Edit User</h3>
+      <button onclick="closeModal()" class="text-xl">✕</button>
+    </div>
+
+    <form
+      hx-post="/admin/users/{{ .User.ID }}/update"
+      hx-target="#modal"
+      hx-swap="innerHTML"
+      class="px-4 py-4 grid gap-3 text-[12px]"
+    >
+
+      <input name="nama" value="{{ .User.Nama }}"
+             class="border rounded px-3 py-2" required>
+
+      <input value="{{ .User.Username }}" readonly
+             class="border rounded px-3 py-2 bg-gray-100 font-mono">
+
+      <input type="password" name="password"
+             placeholder="Password baru (opsional)"
+             class="border rounded px-3 py-2">
+
+      <input name="jabatan" value="{{ .User.Jabatan }}"
+             class="border rounded px-3 py-2">
+
+      <select name="role" class="border rounded px-3 py-2">
+        <option value="admin" {{ if eq .User.Role "admin" }}selected{{ end }}>Admin</option>
+        <option value="operator" {{ if eq .User.Role "operator" }}selected{{ end }}>Operator</option>
+        <option value="viewer" {{ if eq .User.Role "viewer" }}selected{{ end }}>Viewer</option>
+      </select>
+
+      <div class="pt-4 flex gap-2">
+        <button type="button" onclick="closeModal()"
+                class="w-full border rounded py-2">
+          Batal
+        </button>
+        <button type="submit"
+                class="w-full bg-blue-600 text-white rounded py-2">
+          Simpan
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

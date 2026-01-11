@@ -44,9 +44,55 @@
   >
 
     <!-- HEADER -->
-    <div class="p-4 text-lg font-bold text-center border-b border-slate-700">
-      👤❌ Absensi Online
+    <div class="p-4 border-b border-slate-700 flex items-center gap-3">
+
+      <!-- AVATAR / LOGO -->
+      <div class="w-10 h-10 rounded-full bg-green-500
+                  flex items-center justify-center
+                  text-slate-900 font-bold">
+        {{ if .AuthUser }}
+          {{ printf "%.1s" .AuthUser.Nama }}
+        {{ else }}
+          👤
+        {{ end }}
+      </div>
+
+<!-- USER INFO -->
+<div class="flex-1 text-left leading-tight">
+  {{ if .AuthUser }}
+    <!-- NAMA -->
+    <div class="text-sm font-semibold text-white">
+      {{ .AuthUser.Nama }}
     </div>
+
+    <div class="flex items-center gap-2 mt-0.5">
+
+      <span class="text-[11px] text-slate-400 font-mono">
+        @{{ .AuthUser.Username }}
+      </span>
+
+      <span class="px-2 py-0.5 text-[10px] rounded text-white
+        {{ if eq .AuthUser.Role "admin" }}bg-red-600{{ end }}
+        {{ if eq .AuthUser.Role "operator" }}bg-blue-600{{ end }}
+        {{ if eq .AuthUser.Role "viewer" }}bg-slate-500{{ end }}
+      ">
+        {{ .AuthUser.Role }}
+      </span>
+
+
+    </div>
+
+  {{ else }}
+    <div class="text-sm font-semibold text-white">
+      Absensi Online
+    </div>
+  {{ end }}
+</div>
+
+
+    </div>
+
+
 
     <!-- MENU -->
     <nav class="flex-1 mt-4 space-y-1">
@@ -75,19 +121,52 @@
         <span class="text-lg">💳</span>
         <span>Daftar Kartu</span>
       </a>
+
+      {{ if eq .AuthUser.Role "admin" }}
+      <a
+        href="/admin/users"
+        hx-boost="false"
+        class="flex items-center gap-3 px-4 py-3
+              hover:bg-slate-700 transition"
+      >
+        <span class="text-lg">🛡️</span>
+        <span>Administrator</span>
+      </a>
+      {{ end }}
+
+
+
     </nav>
 
-    <!-- FOOTER -->
-    <div class="p-3 text-xs text-center text-slate-400 border-t border-slate-700">
-      <a
-        href="https://github.com/maonks"
-        target="_blank"
-        rel="noopener"
-        class="hover:underline hover:text-gray-700"
-        >  
-      © 2026 MaonksCode
-      </a>
-    </div>
+      <!-- FOOTER / LOGOUT (STICKY BOTTOM) -->
+      <div class="mt-auto border-t border-slate-700">
+
+        <button
+          onclick="logout()"
+          class="w-full flex items-center gap-3
+                px-4 py-3
+                text-left
+                text-red-400
+                hover:bg-slate-800 hover:text-red-300
+                transition"
+        >
+          <span class="text-lg">🚪</span>
+          <span>Logout</span>
+        </button>
+
+        <div class="p-3 text-xs text-center text-slate-400">
+          <a
+            href="https://github.com/maonks"
+            target="_blank"
+            rel="noopener"
+            class="hover:underline hover:text-gray-300"
+          >
+            © 2026 MaonksCode
+          </a>
+        </div>
+
+      </div>
+
 
   </aside>
 
@@ -144,7 +223,7 @@
 <!-- MODAL -->
 <div id="modal"></div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- ====SCRIPT untuk sidebar ====== -->
 <script>
   function toggleSidebar() {
     const sidebar = document.getElementById("sidebar");
@@ -155,6 +234,7 @@
   }
 </script>
 
+<!-- ====SCRIPT untuk websocket tap realtime ====== -->
 <script>
   const ws = new WebSocket("ws://192.168.1.100:8000/websocket");
 
@@ -189,13 +269,34 @@
   };
 </script>
 
-
+<!-- ====SCRIPT untuk close modal otomatis ====== -->
 <script>
   function closeModal() {
     const modal = document.getElementById("modal");
     if (modal) modal.innerHTML = "";
   }
 </script>
+
+<!-- ====SCRIPT untuk logout ====== -->
+<script>
+  function logout() {
+    fetch("/logout", {
+      method: "POST",
+      credentials: "include" // ⬅️ WAJIB
+    }).then(() => {
+      window.location.href = "/login";
+    });
+  }
+</script>
+
+
+<!-- <script>
+  document.body.addEventListener("userUpdated", () => {
+    const modal = document.getElementById("modal");
+    if (modal) modal.innerHTML = "";
+  });
+</script> -->
+
 
 <!-- FLOATING WHATSAPP BUTTON -->
 <a

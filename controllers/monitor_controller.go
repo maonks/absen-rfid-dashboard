@@ -111,7 +111,7 @@ func MonitorAbsen(db *gorm.DB) fiber.Handler {
 			LIMIT 50
 		`).Scan(&rows)
 
-		return c.Render("pages/monitor_page", fiber.Map{
+		return utils.Render(c, "pages/monitor_page", fiber.Map{
 			"Rows": rows,
 		}, "layouts/main")
 	}
@@ -134,7 +134,7 @@ func RealtimeAbsen(db *gorm.DB) fiber.Handler {
 			LIMIT 50
 		`).Scan(&rows)
 
-		return c.Render("pages/realtime_page", fiber.Map{
+		return utils.Render(c, "pages/realtime_page", fiber.Map{
 			"Rows": rows,
 		})
 	}

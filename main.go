@@ -40,6 +40,7 @@ func main() {
 	routes.DeviceRoute(app, db)
 	routes.AbsenRoute(app, db)
 	routes.WebRoutes(app, db)
+	routes.AdminRoute(app, db)
 
 	app.Listen("" + os.Getenv("APP_HOST") + ":" + os.Getenv("APP_PORT") + "")
 }

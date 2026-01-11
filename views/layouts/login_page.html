@@ -8,17 +8,14 @@
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
   <style>
     /* ===== CARD ANIMATION ===== */
     @keyframes fadeSlide {
-      from {
-        opacity: 0;
-        transform: translateY(14px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     .animate-fade-slide {
       animation: fadeSlide 0.6s ease-out both;
@@ -45,14 +42,8 @@
 
     /* ===== FLOATING DOTS ===== */
     @keyframes floatUp {
-      from {
-        transform: translateY(0);
-        opacity: 0.35;
-      }
-      to {
-        transform: translateY(-120vh);
-        opacity: 0;
-      }
+      from { transform: translateY(0); opacity: 0.35; }
+      to   { transform: translateY(-120vh); opacity: 0; }
     }
 
     .dot {
@@ -89,11 +80,8 @@
 
   <!-- LOGIN CARD -->
   <div class="relative z-10 w-full max-w-sm
-              bg-white
-              rounded-xl
-              shadow-xl
-              p-6
-              animate-fade-slide">
+              bg-white rounded-xl shadow-xl
+              p-6 animate-fade-slide">
 
     <!-- HEADER -->
     <div class="text-center mb-6">
@@ -106,8 +94,22 @@
       </p>
     </div>
 
-    <!-- FORM -->
-    <form method="post" action="/login" class="space-y-4">
+    <!-- ERROR MESSAGE -->
+    <div
+      id="login-error"
+      class="hidden mb-3 text-xs text-red-600
+             bg-red-50 border border-red-200
+             rounded-md px-3 py-2">
+    </div>
+
+    <!-- FORM (HTMX + COOKIE JWT) -->
+    <form
+      hx-post="/login"
+      hx-target="#login-error"
+      hx-swap="innerHTML"
+      hx-on="htmx:responseError: this.classList.remove('hidden')"
+      class="space-y-4"
+    >
 
       <!-- USERNAME -->
       <div>
@@ -119,14 +121,9 @@
           name="username"
           required
           autofocus
-          placeholder="Masukkan username"
-          class="w-full
-                 rounded-lg
-                 border border-slate-300
-                 px-4 py-2.5
-                 text-sm
-                 focus:outline-none
-                 focus:ring-2
+          class="w-full rounded-lg border border-slate-300
+                 px-4 py-2.5 text-sm
+                 focus:outline-none focus:ring-2
                  focus:ring-slate-800"
         >
       </div>
@@ -140,14 +137,9 @@
           type="password"
           name="password"
           required
-          placeholder="••••••••"
-          class="w-full
-                 rounded-lg
-                 border border-slate-300
-                 px-4 py-2.5
-                 text-sm
-                 focus:outline-none
-                 focus:ring-2
+          class="w-full rounded-lg border border-slate-300
+                 px-4 py-2.5 text-sm
+                 focus:outline-none focus:ring-2
                  focus:ring-slate-800"
         >
       </div>
@@ -155,15 +147,9 @@
       <!-- SUBMIT -->
       <button
         type="submit"
-        class="w-full
-               bg-slate-900
-               hover:bg-slate-800
-               text-white
-               py-2.5
-               rounded-lg
-               text-sm
-               font-medium
-               transition
+        class="w-full bg-slate-900 hover:bg-slate-800
+               text-white py-2.5 rounded-lg
+               text-sm font-medium transition
                active:scale-[0.97]"
       >
         🔐 Login

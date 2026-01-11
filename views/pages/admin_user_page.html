@@ -1,0 +1,104 @@
+
+<div class="space-y-4">
+  <!-- HEADER -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-lg font-semibold">🛡️ Administrator</h2>
+      <p class="text-xs text-gray-500">
+        Manajemen akun pengguna
+      </p>
+    </div>
+
+    <!-- TOMBOL TAMBAH (MODAL) -->
+    <button
+      hx-get="/admin/users/create"
+      hx-target="#modal"
+      hx-swap="innerHTML"
+      class="px-3 py-2 bg-green-600 text-white
+             rounded-md text-xs md:text-sm
+             hover:bg-green-700 transition"
+    >
+      ➕ Tambah User
+    </button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-[11px] md:text-sm
+                  border border-gray-200 rounded-lg overflow-hidden">
+
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 text-center w-10">No</th>
+          <th class="p-2 text-left">Nama</th>
+          <th class="p-2 text-center">Username</th>
+          <th class="p-2 text-center">Jabatan</th>
+          <th class="p-2 text-center">Role</th>
+          <th class="p-2 text-center w-24">Aksi</th>
+        </tr>
+      </thead>
+
+      <tbody id="user-table">
+        {{ range $i, $u := .Users }}
+        <tr class="border-t hover:bg-gray-50 transition">
+
+          <td class="p-2 text-center">{{ add $i 1 }}</td>
+
+          <td class="p-2 font-medium">
+            {{ $u.Nama }}
+          </td>
+
+          <td class="p-2 text-center font-mono">
+            {{ $u.Username }}
+          </td>
+
+          <td class="p-2 text-center">
+            {{ $u.Jabatan }}
+          </td>
+
+          <td class="p-2 text-center">
+            <span class="px-2 py-0.5 text-[10px]
+                         rounded bg-blue-100 text-blue-700">
+              {{ $u.Role }}
+            </span>
+          </td>
+
+          <!-- AKSI -->
+          <td class="p-2 text-center space-x-2">
+
+            <!-- EDIT -->
+            <button
+              hx-get="/admin/users/{{ $u.ID }}/edit"
+              hx-target="#modal"
+              hx-swap="innerHTML"
+              class="text-blue-600 hover:underline text-xs"
+            >
+              ✏️ Edit
+            </button>
+
+            <!-- DELETE -->
+            <button
+              hx-get="/admin/users/{{ $u.ID }}/delete"
+              hx-target="#modal"
+              hx-swap="innerHTML"
+              class="text-red-600 hover:underline text-xs"
+            >
+              🗑️ Hapus
+            </button>
+
+          </td>
+        </tr>
+
+        {{ else }}
+        <tr>
+          <td colspan="6" class="p-6 text-center text-gray-500">
+            Belum ada akun
+          </td>
+        </tr>
+        {{ end }}
+      </tbody>
+
+    </table>
+  </div>
+
+</div>

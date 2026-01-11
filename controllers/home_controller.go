@@ -2,6 +2,7 @@ package webcontroller
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/maonks/absen-rfid-backend/utils"
 	"gorm.io/gorm"
 )
 
@@ -79,7 +80,7 @@ func HomePage(db *gorm.DB) fiber.Handler {
 			ORDER BY s.nama
 		`).Scan(&tanpa)
 
-		return c.Render("pages/home_page", fiber.Map{
+		return utils.Render(c, "pages/home_page", fiber.Map{
 			"Hadir":           hadir,
 			"TanpaKeterangan": tanpa,
 		}, "layouts/main")
@@ -136,7 +137,7 @@ func HomeRow(db *gorm.DB) fiber.Handler {
 			return c.SendStatus(fiber.StatusNoContent)
 		}
 
-		return c.Render("partials/home_row", fiber.Map{
+		return utils.Render(c, "partials/home_row", fiber.Map{
 			"No":     0, // optional: bisa dihitung di client
 			"Uid":    row.Uid,
 			"Nama":   row.Nama,
