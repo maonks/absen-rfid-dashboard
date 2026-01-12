@@ -2,6 +2,7 @@
 package webcontroller
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -66,7 +67,7 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 			}
 
 			status := "OK"
-			if r.Masuk.Hour() > 7 || (r.Masuk.Hour() == 7 && r.Masuk.Minute() > 0) {
+			if r.Masuk.Hour() > 7 || (r.Masuk.Hour() == 7 && r.Masuk.Minute() > 30) {
 				status = "LATE"
 			}
 
@@ -101,7 +102,10 @@ func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 
 		// ==== AMBIL QUERY PARAM ====
 		month := c.QueryInt("bulan", int(now.Month()))
+
 		year := c.QueryInt("tahun", now.Year())
+
+		fmt.Println("bulan", month)
 
 		// ==== JUMLAH HARI DALAM BULAN ====
 		lastDay := time.Date(year, time.Month(month)+1, 0, 0, 0, 0, 0, time.Local).Day()

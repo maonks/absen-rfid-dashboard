@@ -38,67 +38,68 @@
             md:items-center md:justify-between
             gap-3 mb-3">
 
-  <!-- ===== LEGEND (KIRI) ===== -->
-  <div class="flex flex-wrap items-center gap-4 text-[11px]">
+    <!-- ===== LEGEND (KIRI) ===== -->
+    <div class="flex flex-wrap items-center gap-4 text-[11px]">
 
-    <div class="flex items-center gap-1.5">
-      <span class="w-3 h-3 rounded bg-green-500"></span>
-      <span>Tepat Waktu</span>
+      <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded bg-green-500"></span>
+        <span>Tepat Waktu</span>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded bg-red-500"></span>
+        <span>Terlambat</span>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded bg-slate-300"></span>
+        <span>Tidak Hadir</span>
+      </div>
+
     </div>
 
-    <div class="flex items-center gap-1.5">
-      <span class="w-3 h-3 rounded bg-red-500"></span>
-      <span>Terlambat</span>
-    </div>
+      <!-- ===== FILTER (KANAN) ===== -->
+    <form
+      hx-get="/absensi/bulanan/table"
+      hx-target="#absensi-bulanan"
+      hx-swap="outerHTML"
+      class="flex items-center gap-2 text-[11px]"
+    >
 
-    <div class="flex items-center gap-1.5">
-      <span class="w-3 h-3 rounded bg-slate-300"></span>
-      <span>Tidak Hadir</span>
-    </div>
+      <!-- BULAN -->
+      <select name="bulan" class="border rounded px-2 py-1 bg-white">
+        {{ range .Months }}
+          <option value="{{ .Value }}"
+            {{ if eq .Value $.SelectedMonth }}selected{{ end }}>
+            {{ .Label }}
+          </option>
+        {{ end }}
+      </select>
 
-  </div>
+      <!-- TAHUN -->
+      <select name="tahun" class="border rounded px-2 py-1 bg-white">
+        {{ range .Years }}
+          <option value="{{ . }}"
+            {{ if eq . $.SelectedYear }}selected{{ end }}>
+            {{ . }}
+          </option>
+        {{ end }}
+      </select>
 
-  <!-- ===== FILTER (KANAN) ===== -->
-<form
-  hx-get="/absensi/bulanan/table"
-  hx-target="#absensi-bulanan"
-  hx-swap="outerHTML"
-  class="flex items-center gap-2 text-[11px]"
->
+      <button
+        type="submit"
+        class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800">
+        🔍 Tampilkan
+      </button>
 
-  <!-- BULAN -->
-  <select name="bulan" class="border rounded px-2 py-1 bg-white">
-    {{ range .Months }}
-      <option value="{{ .Value }}"
-        {{ if eq .Value $.SelectedMonth }}selected{{ end }}>
-        {{ .Label }}
-      </option>
-    {{ end }}
-  </select>
-
-  <!-- TAHUN -->
-  <select name="tahun" class="border rounded px-2 py-1 bg-white">
-    {{ range .Years }}
-      <option value="{{ . }}"
-        {{ if eq . $.SelectedYear }}selected{{ end }}>
-        {{ . }}
-      </option>
-    {{ end }}
-  </select>
-
-  <button
-    type="submit"
-    class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800">
-    🔍 Tampilkan
-  </button>
-
-</form>
-
+    </form>
 
 </div>
 
 
- 
+
+
+ <!-- ===== Tabel 30 Hari ===== -->
 <div
    id="absensi-bulanan"
     hx-get="/absensi/bulanan/table"

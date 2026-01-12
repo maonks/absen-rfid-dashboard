@@ -41,20 +41,20 @@ func AbsensiPage(db *gorm.DB) fiber.Handler {
 			  to_char(pulang, 'HH24:MI:SS') AS pulang,
 
 			  CASE
-			    WHEN masuk::time > '07:00:00'
-			      THEN to_char(masuk::time - '07:00:00'::time, 'HH24:MI:SS')
+			    WHEN masuk::time > '07:30:00'
+			      THEN to_char(masuk::time - '07:30:00'::time, 'HH24:MI:SS')
 			    ELSE '-'
 			  END AS terlambat,
 
 			  CASE
-			    WHEN pulang::time < '16:00:00'
+			    WHEN pulang::time < '14:00:00'
 			      THEN to_char('16:00:00'::time - pulang::time, 'HH24:MI:SS')
 			    ELSE '-'
 			  END AS pulang_cepat,
 
 			  CASE
-			    WHEN pulang::time > '16:00:00'
-			      THEN to_char(pulang::time - '16:00:00'::time, 'HH24:MI:SS')
+			    WHEN pulang::time > '14:00:00'
+			      THEN to_char(pulang::time - '14:00:00'::time, 'HH24:MI:SS')
 			    ELSE '-'
 			  END AS lembur,
 

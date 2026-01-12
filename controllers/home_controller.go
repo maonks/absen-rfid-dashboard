@@ -37,7 +37,7 @@ func HomePage(db *gorm.DB) fiber.Handler {
 			    MIN(a.waktu) AS masuk,
 			    MAX(
 			      CASE
-			        WHEN a.waktu::time >= '16:00:00'
+			        WHEN a.waktu::time >= '14:00:00'
 			        THEN a.waktu
 			      END
 			    ) AS pulang
@@ -101,7 +101,7 @@ func HomeRow(db *gorm.DB) fiber.Handler {
 				MIN(a.waktu) AS masuk,
 				MAX(
 				CASE
-					WHEN a.waktu::time >= '16:00:00'
+					WHEN a.waktu::time >= '14:00:00'
 					THEN a.waktu
 				END
 				) AS pulang
