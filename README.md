@@ -48,19 +48,18 @@ Fitur Utama
 - 🧩 Arsitektur modular & scalable
 
 
-Arsitektur Firmware
+Arsitektur Dashboard
 --------------------
 
 ```text
-absen-rfid-firmware/
-├── absen-rfid-firmware.ino      # Entry point Arduino
+absen-rfid-dashboard/
+├── main.go      # Entry point Arduino
 ├── README.md
 │
 ├── config/                      # Konfigurasi device & environment
-│   ├── config.h
-│   └── secrets.h.example
+│   └──  database.go
 │
-├── core/                        # WiFi & HTTP client
+├── controllers/                        # WiFi & HTTP client
 │   ├── wifi_manager.c
 │   ├── wifi_manager.h
 │   ├── http_client.c
