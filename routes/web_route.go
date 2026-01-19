@@ -12,6 +12,7 @@ import (
 func WebRoutes(app *fiber.App, db *gorm.DB) {
 
 	app.Get("/websocket", websocket.New(apicontroller.WebsocketHandler))
+
 	app.Get("/login", func(c *fiber.Ctx) error {
 		return c.Render("layouts/login_page", nil)
 	})
@@ -23,6 +24,9 @@ func WebRoutes(app *fiber.App, db *gorm.DB) {
 		middlewares.LoadUser(db))
 
 	pakaijwt.Get("/", webcontroller.HomePage(db))
+	pakaijwt.Static("/static", "./views/static")
+
+	pakaijwt.Get("/api/home/realtime", webcontroller.HomeRealtime(db))
 
 	pakaijwt.Get("/absensi", webcontroller.AbsensiPage(db))
 

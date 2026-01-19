@@ -2,7 +2,7 @@
 <div
   id="home-realtime"
   hx-get="/api/home/realtime"
-  hx-trigger="reload"
+  hx-trigger="refresh"
   hx-swap="outerHTML"
 >
 
@@ -10,7 +10,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
     <!-- ================= SISWA HADIR ================= -->
-    <div class="bg-slate-50 border border-slate-200 rounded-lg shadow-sm p-3">
+    <div class="bg-slate-50 border border-slate-200 rounded-lg shadow-sm p-2">
 
       <h2 class="text-sm font-semibold text-slate-700 mb-2">
         Siswa Hadir
@@ -108,7 +108,7 @@
     </div>
 
     <!-- ================= SISWA TANPA KETERANGAN ================= -->
-    <div class="bg-slate-50 border border-slate-200 rounded-lg shadow-sm p-3">
+    <div class="bg-slate-50 border border-slate-200 rounded-lg shadow-sm p-2">
 
       <h2 class="text-sm font-semibold text-slate-700 mb-2">
         Siswa Tanpa Keterangan

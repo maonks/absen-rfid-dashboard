@@ -44,7 +44,7 @@ func Login(db *gorm.DB) fiber.Handler {
 			Name:     "access_token",
 			Value:    token,
 			HTTPOnly: true,
-			Secure:   false, // true jika HTTPS
+			Secure:   true, // true jika HTTPS
 			SameSite: "Lax",
 			Expires:  time.Now().Add(30 * time.Minute),
 			Path:     "/",
@@ -62,14 +62,14 @@ func Login(db *gorm.DB) fiber.Handler {
 
 func Logout(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
-		Name:     "access_token", // ⬅️ HARUS SAMA
+		Name:     "access_token",
 		Value:    "",
 		Expires:  time.Unix(0, 0),
 		MaxAge:   -1,
 		Path:     "/",
 		HTTPOnly: true,
 		SameSite: "Lax",
-		Secure:   false, // true jika HTTPS
+		Secure:   true, // true jika HTTPS
 	})
 
 	return c.SendStatus(fiber.StatusOK)

@@ -1,6 +1,8 @@
 package webcontroller
 
 import (
+	"os"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/maonks/absen-rfid-backend/utils"
 	"gorm.io/gorm"
@@ -83,7 +85,74 @@ func HomePage(db *gorm.DB) fiber.Handler {
 		return utils.Render(c, "pages/home_page", fiber.Map{
 			"Hadir":           hadir,
 			"TanpaKeterangan": tanpa,
+			"ApiBase":         os.Getenv("API_BASE_URL"),
 		}, "layouts/main")
+	}
+}
+
+func HomeRealtime(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		var hadir []HadirRow
+		var tanpa []TanpaRow
+
+		// ================= SISWA HADIR =================
+		db.Raw(`
+			WITH daily AS (
+			  SELECT
+			    s.id AS id,
+			    k.uid AS uid,
+			    s.nama AS nama,
+			    MIN(a.waktu) AS masuk,
+			    MAX(
+			      CASE
+			        WHEN a.waktu::time >= '14:00:00'
+			        THEN a.waktu
+			      END
+			    ) AS pulang
+			  FROM absens a
+			  JOIN kartus k ON k.uid = a.uid
+			  JOIN siswas s ON s.id = k.siswa_id
+			  WHERE DATE(a.waktu) = CURRENT_DATE
+			  GROUP BY s.id, k.uid, s.nama
+			)
+			SELECT
+			  id,
+			  uid,
+			  nama,
+			  to_char(masuk, 'HH24:MI:SS') AS masuk,
+			  CASE
+			    WHEN pulang IS NOT NULL
+			      THEN to_char(pulang, 'HH24:MI:SS')
+			    ELSE NULL
+			  END AS pulang,
+			  CASE
+			    WHEN pulang IS NULL THEN 'MASUK'
+			    ELSE 'PULANG'
+			  END AS status
+			FROM daily
+			ORDER BY nama
+		`).Scan(&hadir)
+
+		// ================= TANPA KETERANGAN =================
+		db.Raw(`
+			SELECT
+			  s.id,
+			  k.uid,
+			  s.nama
+			FROM siswas s
+			LEFT JOIN kartus k ON k.siswa_id = s.id
+			LEFT JOIN absens a
+			  ON a.uid = k.uid
+			  AND DATE(a.waktu) = CURRENT_DATE
+			WHERE a.uid IS NULL
+			ORDER BY s.nama
+		`).Scan(&tanpa)
+
+		return utils.Render(c, "pages/home_page", fiber.Map{
+			"Hadir":           hadir,
+			"TanpaKeterangan": tanpa,
+		})
 	}
 }
 

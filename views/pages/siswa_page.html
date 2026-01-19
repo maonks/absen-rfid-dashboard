@@ -5,7 +5,7 @@
   <div>
     <h2 class="text-lg md:text-xl font-semibold">👨‍🎓 Data Siswa</h2>
     <p class="text-xs text-gray-500">
-      
+      Informasi detail data siswa
     </p>
   </div>
 
@@ -36,32 +36,32 @@
 
       <thead class="bg-gray-100 text-gray-700">
         <tr>
-          <th class="py-2 px-2 md:p-3 w-10 text-center">No</th>
-          <th class="py-2 px-2 md:p-3 text-left">Nama</th>
+          <th class="py-2 px-2 md:p-2 w-10 text-center">No</th>
+          <th class="py-2 px-2 md:p-2 text-left">Nama</th>
 
           <!-- MOBILE HIDDEN -->
-          <th class="hidden md:table-cell py-2 px-2 md:p-3 text-center">
+          <th class="hidden md:table-cell py-2 px-2 md:p-2 text-center">
             NIS
           </th>
 
-          <th class="py-2 px-2 md:p-3 text-center">
+          <th class="py-2 px-2 md:p-2 text-center">
             Kelas
           </th>
 
           <!-- MOBILE HIDDEN -->
-          <th class="hidden md:table-cell py-2 px-2 md:p-3 text-center">
+          <th class="hidden md:table-cell py-2 px-2 md:p-2 text-center">
             Jenis Kelamin
           </th>
 
-          <th class="hidden md:table-cell py-2 px-2 md:p-3 text-center">
+          <th class="hidden md:table-cell py-2 px-2 md:p-2 text-center">
             Alamat
           </th>
 
-          <th class="py-2 px-2 md:p-3 text-center">
+          <th class="py-2 px-2 md:p-2 text-center">
             Status
           </th>
 
-          <th class="py-2 px-2 md:p-3 text-center">
+          <th class="py-2 px-2 md:p-2 text-center">
             Mode
           </th>
         </tr>
@@ -71,31 +71,31 @@
         {{ range $i, $s := .Siswa }}
         <tr class="border-t hover:bg-gray-50 transition">
 
-          <td class="py-1.5 px-2 md:p-3 text-center">
+          <td class="py-1.5 px-2 md:p-2 text-center">
             {{ add $i 1 }}
           </td>
 
-          <td class="py-1.5 px-2 md:p-3 font-medium whitespace-nowrap">
+          <td class="py-1.5 px-2 md:p-2 font-medium whitespace-nowrap">
             {{ $s.Nama }}
           </td>
 
-          <td class="hidden md:table-cell py-1.5 px-2 md:p-3 text-center font-mono">
+          <td class="hidden md:table-cell py-1.5 px-2 md:p-2 text-center font-mono">
             {{ $s.NIS }}
           </td>
 
-          <td class="py-1.5 px-2 md:p-3 text-center">
+          <td class="py-1.5 px-2 md:p-2 text-center">
             {{ $s.Kelas }} {{ $s.Jurusan }}
           </td>
 
-          <td class="hidden md:table-cell py-1.5 px-2 md:p-3 text-center">
+          <td class="hidden md:table-cell py-1.5 px-2 md:p-2 text-center">
             {{ $s.JenisKelamin }}
           </td>
 
-          <td class="hidden md:table-cell py-1.5 px-2 md:p-3 text-center">
+          <td class="hidden md:table-cell py-1.5 px-2 md:p-2 text-center">
             {{ $s.Alamat }}
           </td>
 
-          <td class="py-1.5 px-2 md:p-3 text-center">
+          <td class="py-1.5 px-2 md:p-2 text-center">
             {{ if eq $s.Status "aktif" }}
               <span class="px-2 py-0.5 text-[10px] rounded-full bg-green-600 text-white">
                 Aktif
@@ -107,7 +107,7 @@
             {{ end }}
           </td>
 
-          <td class="py-1.5 px-2 md:p-3 text-center">
+          <td class="py-1.5 px-2 md:p-2 text-center">
             <button
               hx-get="/siswa/{{ $s.ID }}/edit"
               hx-target="#modal"

@@ -16,4 +16,9 @@ func AbsenRoute(app *fiber.App, db *gorm.DB) {
 
 	app.Get("/api/home/row/:uid", webcontroller.HomeRow(db))
 
+	app.Static("/pwa", "./pwa")
+	app.Get("/favicon.ico", func(c *fiber.Ctx) error {
+		return c.SendFile("./pwa/icons/maonkscode-icon.png")
+	})
+
 }

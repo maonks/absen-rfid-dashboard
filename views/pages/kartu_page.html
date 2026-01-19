@@ -5,6 +5,7 @@
     <div>
       <h2 class="text-lg md:text-xl font-semibold">💳 Data Kartu RFID</h2>
       <p class="text-xs text-gray-500">
+        Informasi kartu terpakai / free
       </p>
     </div>
   </div>
@@ -19,11 +20,11 @@
 
       <thead class="bg-gray-100 text-gray-700">
         <tr>
-          <th class="py-2 px-2 md:p-3 w-10 text-center">No</th>
-          <th class="py-2 px-2 md:p-3 text-left">UID</th>
-          <th class="py-2 px-2 md:p-3 text-left">Pemilik</th>
-          <th class="py-2 px-2 md:p-3 text-center">Waktu</th>
-          <th class="py-2 px-2 md:p-3 text-center">Status</th>
+          <th class="py-2 px-2 md:p-2 w-10 text-center">No</th>
+          <th class="py-2 px-2 md:p-2 text-left">UID</th>
+          <th class="py-2 px-2 md:p-2 text-left">Pemilik</th>
+          <th class="py-2 px-2 md:p-2 text-center">Waktu</th>
+          <th class="py-2 px-2 md:p-2 text-center">Status</th>
         </tr>
       </thead>
 
@@ -32,17 +33,17 @@
         <tr class="border-t hover:bg-gray-50 transition">
 
           <!-- NO -->
-          <td class="py-1.5 px-2 md:p-3 text-center text-gray-600">
+          <td class="py-1.5 px-2 md:p-2 text-center text-gray-600">
             {{ add $i 1 }}
           </td>
 
           <!-- UID -->
-          <td class="py-1.5 px-2 md:p-3 font-mono text-gray-800">
+          <td class="py-1.5 px-2 md:p-2 font-mono text-gray-800">
             {{ $r.UID }}
           </td>
 
           <!-- NAMA SISWA / FREE -->
-          <td class="py-1.5 px-2 md:p-3">
+          <td class="py-1.5 px-2 md:p-2">
             {{ if $r.NamaSiswa }}
               <span class="font-medium text-gray-800">
                 {{ $r.NamaSiswa }}
@@ -55,12 +56,12 @@
           </td>
 
           <!-- WAKTU TAP AWAL -->
-          <td class="py-1.5 px-2 md:p-3 text-center font-mono text-gray-800">
+          <td class="py-1.5 px-2 md:p-2 text-center font-mono text-gray-800">
             {{ $r.Waktu.Format "02-01-2006 15:04:11" }}
           </td>
 
           <!-- STATUS -->
-          <td class="py-1.5 px-2 md:p-3 text-center">
+          <td class="py-1.5 px-2 md:p-2 text-center">
             {{ if eq $r.Status "FREE" }}
               <span class="px-2 py-0.5 text-[10px] rounded-full
                            bg-green-600 text-white">

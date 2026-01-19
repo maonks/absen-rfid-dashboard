@@ -1,0 +1,21 @@
+{
+  "name": "Absensi RFID",
+  "short_name": "Absensi",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/pwa/icons/maonkscode-logo250.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/pwa/icons/maonkscode-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
