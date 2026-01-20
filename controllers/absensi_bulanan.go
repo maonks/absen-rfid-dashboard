@@ -51,7 +51,7 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 			WHERE EXTRACT(MONTH FROM a.waktu) = ?
 			  AND EXTRACT(YEAR FROM a.waktu) = ?
 			GROUP BY s.nama, tgl
-			ORDER BY s.nama
+			ORDER BY s.nama ASC
 		`, month, year).Scan(&raws)
 
 		// ==== MAPPING KE TABLE ====
@@ -137,7 +137,7 @@ func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 			WHERE EXTRACT(MONTH FROM a.waktu) = ?
 			  AND EXTRACT(YEAR FROM a.waktu) = ?
 			GROUP BY s.nama, tgl
-			ORDER BY s.nama
+			ORDER BY s.nama ASC
 		`, month, year).Scan(&raws)
 
 		// ==== MAPPING KE TABLE ====

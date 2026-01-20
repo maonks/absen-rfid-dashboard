@@ -1,0 +1,106 @@
+<!-- OVERLAY -->
+<div class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center">
+
+  <!-- MODAL -->
+  <div class="bg-white w-full max-w-lg mx-4
+              rounded-lg shadow-xl
+              flex flex-col
+              max-h-[90vh]">
+
+    <!-- HEADER -->
+    <div class="flex items-center justify-between px-4 py-3 border-b">
+      <div>
+        <h3 class="text-sm font-semibold">➕ Tambah Kelas</h3>
+        <p class="text-[11px] text-gray-500">
+          Tambah kelas & lihat data yang sudah ada
+        </p>
+      </div>
+
+      <button onclick="closeModal()"
+              class="text-xl text-gray-400 hover:text-gray-600">
+        ✕
+      </button>
+    </div>
+
+    <!-- FORM TAMBAH -->
+    <form
+      hx-post="/kelas/store"
+      hx-target="#kelas-list"
+      hx-swap="outerHTML"
+      class="px-4 py-4 border-b space-y-3 text-[12px]"
+    >
+      <div>
+        <label class="block text-gray-600 mb-1">Nama Kelas</label>
+        <input
+          name="nama"
+          required
+          autofocus
+          class="w-full border rounded px-3 py-2"
+        >
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button type="submit"
+                class="flex-1 bg-green-600 text-white rounded py-2 hover:bg-green-700">
+          Simpan
+        </button>
+      </div>
+    </form>
+
+    <!-- LIST DATA KELAS -->
+        <div id="kelas-list"
+            class="flex-1 overflow-y-auto px-4 py-3 text-[12px]">
+
+        {{ if .Kelas }}
+        <table class="w-full border rounded overflow-hidden">
+            <thead class="bg-gray-100 text-gray-700">
+            <tr>
+                <th class="px-2 py-1 w-10">No</th>
+                <th class="px-2 py-1 text-left">Nama Kelas</th>
+                <th class="px-2 py-1 w-20 text-center">Aksi</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {{ range $i, $k := .Kelas }}
+            <tr id="kelas-{{ $k.ID }}" class="border-t">
+                <td class="px-2 py-1">{{ add $i 1 }}</td>
+                <td class="px-2 py-1">{{ $k.Nama }}</td>
+                <td class="px-2 py-1 text-center flex gap-2 justify-center">
+
+                <button
+                    hx-get="/kelas/{{ $k.ID }}/edit"
+                    hx-target="#kelas-{{ $k.ID }}"
+                    hx-swap="outerHTML"
+                    class="text-blue-600 hover:underline text-[11px]"
+                >
+                    ✏️
+                </button>
+
+                <button
+                    hx-delete="/kelas/{{ $k.ID }}"
+                    hx-target="#kelas-{{ $k.ID }}"
+                    hx-swap="outerHTML"
+                    hx-confirm="Hapus kelas ini?"
+                    class="text-red-600 hover:underline text-[11px]"
+                >
+                    🗑
+                </button>
+
+                </td>
+            </tr>
+            {{ end }}
+
+            </tbody>
+        </table>
+        {{ else }}
+        <p class="text-center text-gray-400 py-4">
+            Belum ada data kelas
+        </p>
+        {{ end }}
+
+        </div>
+
+
+  </div>
+</div>

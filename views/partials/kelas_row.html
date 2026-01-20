@@ -1,0 +1,29 @@
+
+<tr id="kelas-{{ .Kelas.ID }}" class="border-t">
+  <td class="px-2 py-1">{{ add .Index 1 }}</td>
+  <td class="px-2 py-1">{{ .Kelas.Nama }}</td>
+  <td class="px-2 py-1 text-center flex gap-2 justify-center">
+
+    <!-- EDIT -->
+    <button
+      hx-get="/kelas/{{ .Kelas.ID }}/edit"
+      hx-target="#kelas-{{ .Kelas.ID }}"
+      hx-swap="outerHTML"
+      class="text-blue-600 hover:underline text-[11px]"
+    >
+      ✏️
+    </button>
+
+    <!-- DELETE -->
+    <button
+      hx-delete="/kelas/{{ .Kelas.ID }}"
+      hx-target="#kelas-{{ .Kelas.ID }}"
+      hx-swap="outerHTML"
+      hx-confirm="Hapus kelas ini?"
+      class="text-red-600 hover:underline text-[11px]"
+    >
+      🗑
+    </button>
+
+  </td>
+</tr>

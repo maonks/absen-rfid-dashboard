@@ -1,6 +1,7 @@
 package webcontroller
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,15 +21,21 @@ func SiswaPage(db *gorm.DB) fiber.Handler {
 	}
 }
 
-// // GET /siswa/create
+// GET /siswa/create
 func CreateSiswa(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var kartuKosong []models.Kartu
+		var Kelas []models.Kelas
+		var Jurusan []models.Jurusan
 
 		db.Where("siswa_id IS NULL").Find(&kartuKosong)
+		db.Order("nama asc").Find(&Kelas)
+		db.Order("nama asc").Find(&Jurusan)
 
 		return utils.Render(c, "modals/tambah_siswa", fiber.Map{
 			"KartuKosong": kartuKosong,
+			"Kelas":       Kelas,
+			"Jurusan":     Jurusan,
 		})
 	}
 }
@@ -39,14 +46,29 @@ func StoreSiswa(db *gorm.DB) fiber.Handler {
 
 		tgl, _ := time.Parse("2006-01-02", c.FormValue("tanggal_lahir"))
 
+		kelasStr := c.FormValue("kelas")
+		jurusanStr := c.FormValue("jurusan")
+
+		kelasID, err := strconv.ParseUint(kelasStr, 10, 64)
+
+		if err != nil {
+			return c.Status(400).SendString("Kelas Salah")
+		}
+
+		jurusanID, err := strconv.ParseUint(jurusanStr, 10, 64)
+
+		if err != nil {
+			return c.Status(400).SendString("Jurusan Salah")
+		}
+
 		siswa := models.Siswa{
 			NIS:          c.FormValue("nis"),
 			Nama:         c.FormValue("nama"),
 			JenisKelamin: c.FormValue("jenis_kelamin"),
 			TempatLahir:  c.FormValue("tempat_lahir"),
 			TanggalLahir: tgl,
-			Kelas:        c.FormValue("kelas"),
-			Jurusan:      c.FormValue("jurusan"),
+			KelasID:      uint(kelasID),
+			JurusanID:    uint(jurusanID),
 			Alamat:       c.FormValue("alamat"),
 			NamaWali:     c.FormValue("nama_wali"),
 			NoHP:         c.FormValue("no_hp"),
@@ -151,5 +173,173 @@ func UpdateSiswa(db *gorm.DB) fiber.Handler {
 				setTimeout(() => location.reload(), 800)
 			</script>
 		`)
+	}
+}
+
+// GET /kelas/create
+func CreateKelas(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		var kelas []models.Kelas
+
+		db.Order("nama asc").Find(&kelas)
+
+		return utils.Render(c, "modals/tambah_kelas", fiber.Map{
+
+			"Kelas": kelas,
+		})
+	}
+}
+
+// POST /kelas/store
+func StoreKelas(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		nama := c.FormValue("nama")
+		if nama == "" {
+			return c.SendStatus(400)
+		}
+
+		db.Create(&models.Kelas{
+			Nama: nama,
+		})
+
+		var kelas []models.Kelas
+		db.Order("nama asc").Find(&kelas)
+
+		// RETURN HANYA LIST, BUKAN MODAL
+		return utils.Render(c, "partials/kelas_list", fiber.Map{
+			"Kelas": kelas,
+		})
+	}
+}
+
+func KelasRow(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var kelas models.Kelas
+		db.First(&kelas, c.Params("id"))
+
+		return utils.Render(c, "partials/kelas_row", fiber.Map{
+			"Kelas": kelas,
+			"Index": 0,
+		})
+	}
+}
+
+func KelasEditRow(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var kelas models.Kelas
+		db.First(&kelas, c.Params("id"))
+
+		return utils.Render(c, "partials/kelas_row_edit", fiber.Map{
+			"Kelas": kelas,
+		})
+	}
+}
+
+func KelasUpdate(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		db.Model(&models.Kelas{}).
+			Where("id = ?", c.Params("id")).
+			Update("nama", c.FormValue("nama"))
+
+		var kelas models.Kelas
+		db.First(&kelas, c.Params("id"))
+
+		return utils.Render(c, "partials/kelas_row", fiber.Map{
+			"Kelas": kelas,
+			"Index": 0,
+		})
+	}
+}
+
+func KelasDelete(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		db.Delete(&models.Kelas{}, c.Params("id"))
+		return c.SendString("")
+	}
+}
+
+// GET /kelas/create
+func CreateJurusan(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		var jurusan []models.Jurusan
+
+		db.Order("nama asc").Find(&jurusan)
+
+		return utils.Render(c, "modals/tambah_jurusan", fiber.Map{
+
+			"Jurusan": jurusan,
+		})
+	}
+}
+
+// POST /kelas/store
+func StoreJurusan(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		nama := c.FormValue("nama")
+		if nama == "" {
+			return c.SendStatus(400)
+		}
+
+		db.Create(&models.Jurusan{
+			Nama: nama,
+		})
+
+		var jurusan []models.Jurusan
+		db.Order("nama asc").Find(&jurusan)
+
+		// RETURN HANYA LIST, BUKAN MODAL
+		return utils.Render(c, "partials/jurusan_list", fiber.Map{
+			"Jurusan": jurusan,
+		})
+	}
+}
+
+func JurusanRow(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var jurusan models.Jurusan
+		db.First(&jurusan, c.Params("id"))
+
+		return utils.Render(c, "partials/jurusan_row", fiber.Map{
+			"Jurusan": jurusan,
+			"Index":   0,
+		})
+	}
+}
+
+func JurusanEditRow(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var jurusan models.Jurusan
+		db.First(&jurusan, c.Params("id"))
+
+		return utils.Render(c, "partials/jurusan_row_edit", fiber.Map{
+			"Jurusan": jurusan,
+		})
+	}
+}
+
+func JurusanUpdate(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		db.Model(&models.Jurusan{}).
+			Where("id = ?", c.Params("id")).
+			Update("nama", c.FormValue("nama"))
+
+		var jurusan models.Jurusan
+		db.First(&jurusan, c.Params("id"))
+
+		return utils.Render(c, "partials/jurusan_row", fiber.Map{
+			"Jurusan": jurusan,
+			"Index":   0,
+		})
+	}
+}
+
+func JurusanDelete(db *gorm.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		db.Delete(&models.Jurusan{}, c.Params("id"))
+		return c.SendString("")
 	}
 }

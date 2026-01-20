@@ -9,7 +9,37 @@
     </p>
   </div>
 
+
+  <div class="flex flex-wrap items-center gap-4 text-[11px]">
   <!-- TOMBOL TAMBAH -->
+  <button
+    hx-get="/kelas/create"
+    hx-target="#modal"
+    hx-swap="innerHTML"
+    class="self-start md:self-auto
+           px-3 py-2
+           bg-red-600 text-white
+           rounded-md
+           text-[11px] md:text-sm
+           hover:bg-red-700"
+  >
+    ➕ Kelas
+  </button>
+
+    <button
+    hx-get="/jurusan/create"
+    hx-target="#modal"
+    hx-swap="innerHTML"
+    class="self-start md:self-auto
+           px-3 py-2
+           bg-blue-600 text-white
+           rounded-md
+           text-[11px] md:text-sm
+           hover:bg-blue-700"
+  >
+    ➕ Jurusan
+  </button>
+
   <button
     hx-get="/siswa/create"
     hx-target="#modal"
@@ -23,6 +53,8 @@
   >
     ➕ Tambah Siswa
   </button>
+
+  </div>
 </div>
 
 

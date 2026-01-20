@@ -107,19 +107,29 @@
       <!-- KELAS -->
       <div>
         <label class="block text-gray-600 mb-1">Kelas</label>
-        <input
+        <select
           name="kelas"
           class="w-full border rounded-md px-3 py-2"
         >
+          <option value="">-- Kelas --</option>
+          {{ range .Kelas }}
+            <option value="{{.ID}}">{{.Nama}}</option>
+          {{ end }}
+        </select>
       </div>
 
       <!-- JURUSAN -->
       <div>
         <label class="block text-gray-600 mb-1">Jurusan</label>
-        <input
-          name="jurusan"
+        <select
+          name="kelas"
           class="w-full border rounded-md px-3 py-2"
         >
+        <option value="">-- Jurusan --</option>
+        {{range .Jurusan}}
+          <option value="{{.ID}}"> {{.Nama}} </option>
+        {{end}} 
+        </select>
       </div>
 
       <!-- ALAMAT -->

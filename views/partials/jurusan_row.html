@@ -1,0 +1,30 @@
+
+<tr id="jurusan-{{ .Jurusan.ID }}" class="border-t">
+  <td class="px-2 py-1">{{ add .Index 1 }}</td>
+  <td class="px-2 py-1">{{ .Jurusan.Nama }}</td>
+  <td class="px-2 py-1 text-center flex gap-2 justify-center">
+
+    <!-- EDIT -->
+    <button
+      hx-get="/jurusan/{{ .Jurusan.ID }}/edit"
+      hx-target="#jurusan-{{ .Jurusan.ID }}"
+      hx-swap="outerHTML"
+      class="text-blue-600 hover:underline text-[11px]"
+    >
+      ✏️
+    </button>
+
+    <!-- DELETE -->
+    <button
+      hx-delete="/jurusan/{{ .Jurusan.ID }}"
+      hx-target="#jurusan-{{ .Jurusan.ID }}"
+      hx-swap="outerHTML"
+      hx-confirm="Hapus jurusan ini?"
+      class="text-red-600 hover:underline text-[11px]"
+    >
+      🗑
+    </button>
+
+  </td>
+</tr>
+

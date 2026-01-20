@@ -1,0 +1,37 @@
+<tr id="kelas-{{ .Kelas.ID }}" class="border-t bg-yellow-50">
+  <td class="px-2 py-1">#</td>
+
+  <td class="px-2 py-1">
+    <input
+      name="nama"
+      value="{{ .Kelas.Nama }}"
+      class="w-full border rounded px-2 py-1 text-[12px]"
+      autofocus
+    >
+  </td>
+
+  <td class="px-2 py-1 text-center flex gap-2 justify-center">
+
+    <!-- SIMPAN -->
+    <button
+      hx-post="/kelas/{{ .Kelas.ID }}/update"
+      hx-include="closest tr"
+      hx-target="#kelas-{{ .Kelas.ID }}"
+      hx-swap="outerHTML"
+      class="text-green-600 hover:underline text-[11px]"
+    >
+      💾
+    </button>
+
+    <!-- BATAL -->
+    <button
+      hx-get="/kelas/{{ .Kelas.ID }}/row"
+      hx-target="#kelas-{{ .Kelas.ID }}"
+      hx-swap="outerHTML"
+      class="text-gray-500 hover:underline text-[11px]"
+    >
+      ✕
+    </button>
+
+  </td>
+</tr>

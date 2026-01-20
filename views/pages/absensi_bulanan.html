@@ -56,6 +56,27 @@
         <span>Tidak Hadir</span>
       </div>
 
+      <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded bg-blue-300"></span>
+        <span>Ijin</span>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <span class="w-3 h-3 rounded bg-yellow-300"></span>
+        <span>Sakit</span>
+      </div>
+
+      <button
+        type="button"
+        hx-get="/absensi/bulanan/edit-mode"
+        hx-target="#absensi-bulanan"
+        hx-swap="outerHTML"
+        class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800"
+      >
+        ✏️ Edit
+      </button>
+
+
     </div>
 
       <!-- ===== FILTER (KANAN) ===== -->
@@ -140,36 +161,69 @@
               </td>
 
               <!-- DAY CELLS -->
-              {{ range $.Days }}
-                {{ $cell := index $row.Hari . }}
+                {{ range $.Days }}
+                  {{ $cell := index $row.Hari . }}
 
-                <td class="px-1 py-1 border text-center">
+                  <td class="px-1 py-1 border text-center align-middle">
 
-                  {{ if not $cell }}
-                    <div class="cell bg-slate-200 text-slate-500 rounded py-1">
-                      -
-                    </div>
+                  {{ if not $.EditMode }}
 
-                  {{ else if eq $cell.Status "LATE" }}
-                    <div
-                      class="cell late bg-red-500 text-white rounded py-1 cursor-pointer"
-                      title="Masuk {{ $cell.Masuk }} | Pulang {{ $cell.Pulang }}"
+                    <!-- ================= VIEW MODE ================= -->
+                    {{ if not $cell }}
+                      <div class="cell bg-slate-200 text-slate-500 rounded py-1">-</div>
+
+                    {{ else if eq $cell.Status "LATE" }}
+                      <div class="cell late bg-red-500 text-white rounded py-1">
+                        {{ $cell.Masuk }}
+                      </div>
+
+                    {{ else if eq $cell.Status "OK" }}
+                      <div class="cell bg-green-500 text-white rounded py-1">
+                        {{ $cell.Masuk }}
+                      </div>
+
+                    {{ else if eq $cell.Status "IJIN" }}
+                      <div class="cell bg-blue-500 text-white rounded py-1">
+                        IJ
+                      </div>
+
+                    {{ else if eq $cell.Status "SAKIT" }}
+                      <div class="cell bg-purple-500 text-white rounded py-1">
+                        SK
+                      </div>
+                    {{ end }}
+
+                  {{ else }}
+
+                    <!-- ================= EDIT MODE ================= -->
+                    <select
+                      name="status"
+                      class="
+                        cell cell-select
+                        w-full
+                        border border-slate-300
+                        focus:outline-none focus:ring-0
+                        hover:border-slate-400
+                      "
+                      hx-post="/absensi/bulanan/update"
+                      hx-trigger="change"
+                      hx-vals='{
+                        "user_id": "{{ $row.ID }}",
+                        "tanggal": "{{ . }}"
+                      }'
                     >
-                      {{ $cell.Masuk }}
-                    </div>
-
-                  {{ else if eq $cell.Status "OK" }}
-                    <div
-                      class="cell bg-green-500 text-white rounded py-1 cursor-pointer"
-                      title="Masuk {{ $cell.Masuk }} | Pulang {{ $cell.Pulang }}"
-                    >
-                      {{ $cell.Masuk }}
-                    </div>
+                      <option value="">-</option>
+                      <option value="OK"    {{ if and $cell (eq $cell.Status "OK") }}selected{{ end }}>Hadir</option>
+                      <option value="LATE"  {{ if and $cell (eq $cell.Status "LATE") }}selected{{ end }}>Terlambat</option>
+                      <option value="IJIN"  {{ if and $cell (eq $cell.Status "IJIN") }}selected{{ end }}>IJ</option>
+                      <option value="SAKIT" {{ if and $cell (eq $cell.Status "SAKIT") }}selected{{ end }}>SK</option>
+                    </select>
 
                   {{ end }}
 
-                </td>
-              {{ end }}
+                  </td>
+                {{ end }}
+
 
             </tr>
           {{ end }}

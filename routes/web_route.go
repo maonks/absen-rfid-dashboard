@@ -38,6 +38,20 @@ func WebRoutes(app *fiber.App, db *gorm.DB) {
 	pakaijwt.Get("/siswa/:id/edit", webcontroller.EditSiswa(db))
 	pakaijwt.Post("/siswa/:id/update", webcontroller.UpdateSiswa(db))
 
+	pakaijwt.Get("/kelas/create", webcontroller.CreateKelas(db))
+	pakaijwt.Post("/kelas/store", webcontroller.StoreKelas(db))
+	pakaijwt.Get("/kelas/:id/row", webcontroller.KelasRow(db))
+	pakaijwt.Get("/kelas/:id/edit", webcontroller.KelasEditRow(db))
+	pakaijwt.Post("/kelas/:id/update", webcontroller.KelasUpdate(db))
+	pakaijwt.Delete("/kelas/:id", webcontroller.KelasDelete(db))
+
+	pakaijwt.Get("/jurusan/create", webcontroller.CreateJurusan(db))
+	pakaijwt.Post("/jurusan/store", webcontroller.StoreJurusan(db))
+	pakaijwt.Get("/jurusan/:id/row", webcontroller.JurusanRow(db))
+	pakaijwt.Get("/jurusan/:id/edit", webcontroller.JurusanEditRow(db))
+	pakaijwt.Post("/jurusan/:id/update", webcontroller.JurusanUpdate(db))
+	pakaijwt.Delete("/jurusan/:id", webcontroller.JurusanDelete(db))
+
 	pakaijwt.Get("/kartu", webcontroller.KartuPage(db))
 
 	// web_routes.go

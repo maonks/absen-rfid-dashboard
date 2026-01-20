@@ -9,8 +9,6 @@ type Siswa struct {
 	JenisKelamin string `gorm:"size:1"` // L / P
 	TempatLahir  string
 	TanggalLahir time.Time
-	Kelas        string
-	Jurusan      string
 	Alamat       string
 	NamaWali     string
 	NoHP         string
@@ -18,6 +16,23 @@ type Siswa struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 
-	// RELATION
+	//RELASI
+	KelasID uint
+	Kelas   Kelas `gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;"`
+
+	JurusanID uint
+	Jurusan   Jurusan `gorm:"constraint:OnUpdate:CASCADE,OnDelete:RESTRICT;"`
+
+	// RELASI
 	Kartu *Kartu `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+}
+
+type Kelas struct {
+	ID   uint   `gorm:"primaryKey"`
+	Nama string `gorm:"type:varchar(50);unique;not null"`
+}
+
+type Jurusan struct {
+	ID   uint   `gorm:"primaryKey"`
+	Nama string `gorm:"type:varchar(50);unique;not null"`
 }
