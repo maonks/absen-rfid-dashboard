@@ -128,21 +128,36 @@
       <!-- KELAS -->
       <div>
         <label class="block text-gray-600 mb-1">Kelas</label>
-        <input
+        <select
           name="kelas"
-          value="{{ .Siswa.Kelas }}"
           class="w-full border rounded-md px-3 py-2"
         >
+          {{range .KelasList}}
+            <option 
+              value="{{.ID}}"
+              {{if eq .ID $.Siswa.KelasID}}selected{{end}}
+            >
+              {{.Nama}}
+            </option>
+          {{end}}
+        </select>
       </div>
 
       <!-- JURUSAN -->
       <div>
         <label class="block text-gray-600 mb-1">Jurusan</label>
-        <input
-          name="jurusan"
-          value="{{ .Siswa.Jurusan }}"
-          class="w-full border rounded-md px-3 py-2"
+        <select name="jurusan"
+                class="w-full border rounded-md px-3 py-2"
         >
+        {{range .JurusanList}}
+          <option 
+            value="{{.ID}}"
+            {{if eq .ID $.Siswa.JurusanID}}selected{{end}}
+          >
+            {{.Nama}}
+          </option>
+        {{end}}
+        </select>
       </div>
 
       <!-- ALAMAT -->

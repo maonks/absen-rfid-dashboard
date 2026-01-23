@@ -39,7 +39,9 @@
     id="absensi-bulanan"
     hx-get="/absensi/bulanan/table"
     hx-trigger="refresh"
-    hx-swap="outerHTML">
+    hx-swap="outerHTML"
+    
+    >
 
       <div class="overflow-x-auto border rounded-lg shadow-sm">
 
@@ -105,33 +107,19 @@
                       <div class="cell bg-purple-500 text-white rounded py-1">
                         SK
                       </div>
+
+                    {{ else if eq $cell.Status "ALPA" }}
+                      <div class="cell bg-slate-400 text-white rounded py-1">
+                        A
+                      </div>
+                    {{ else if eq $cell.Status "LIBUR" }}
+                      <div class="cell bg-orange-400 text-white rounded py-1">
+                        LB
+                      </div>
+                      
                     {{ end }}
 
                   {{ else }}
-
-                    <!-- ================= EDIT MODE ================= -->
-                    <select
-                      name="status"
-                      class="
-                        cell cell-select
-                        w-full
-                        border border-slate-300
-                        focus:outline-none focus:ring-0
-                        hover:border-slate-400
-                      "
-                      hx-post="/absensi/bulanan/update"
-                      hx-trigger="change"
-                      hx-vals='{
-                        "user_id": "{{ $row.ID }}",
-                        "tanggal": "{{ . }}"
-                      }'
-                    >
-                      <option value="">-</option>
-                      <option value="OK"    {{ if and $cell (eq $cell.Status "OK") }}selected{{ end }}>Hadir</option>
-                      <option value="LATE"  {{ if and $cell (eq $cell.Status "LATE") }}selected{{ end }}>Terlambat</option>
-                      <option value="IJIN"  {{ if and $cell (eq $cell.Status "IJIN") }}selected{{ end }}>IJ</option>
-                      <option value="SAKIT" {{ if and $cell (eq $cell.Status "SAKIT") }}selected{{ end }}>SK</option>
-                    </select>
 
                   {{ end }}
 

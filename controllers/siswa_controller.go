@@ -13,7 +13,8 @@ import (
 func SiswaPage(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var siswa []models.Siswa
-		db.Find(&siswa)
+
+		db.Preload("Kelas").Preload("Jurusan").Order("nama asc").Find(&siswa)
 
 		return utils.Render(c, "pages/siswa_page", fiber.Map{
 			"Siswa": siswa,
@@ -102,7 +103,7 @@ func EditSiswa(db *gorm.DB) fiber.Handler {
 		id := c.Params("id")
 
 		var siswa models.Siswa
-		if err := db.Preload("Kartu").First(&siswa, id).Error; err != nil {
+		if err := db.Preload("Kartu").Preload("Kelas").Preload("Jurusan").First(&siswa, id).Error; err != nil {
 			return c.Status(404).SendString("Siswa tidak ditemukan")
 		}
 
@@ -118,10 +119,20 @@ func EditSiswa(db *gorm.DB) fiber.Handler {
 		}
 		kartuPilihan = append(kartuPilihan, kartuFree...)
 
+		var kelasList []models.Kelas
+
+		db.Order("nama asc").Find(&kelasList)
+
+		var jurusanList []models.Jurusan
+
+		db.Order("nama asc").Find(&jurusanList)
+
 		return utils.Render(c, "modals/edit_siswa", fiber.Map{
 			"Siswa":        siswa,
 			"KartuPilihan": kartuPilihan,
 			"KartuAktif":   siswa.Kartu,
+			"KelasList":    kelasList,
+			"JurusanList":  jurusanList,
 		})
 	}
 }
@@ -157,8 +168,8 @@ func UpdateSiswa(db *gorm.DB) fiber.Handler {
 			"nis":           c.FormValue("nis"),
 			"nama":          c.FormValue("nama"),
 			"jenis_kelamin": c.FormValue("jenis_kelamin"),
-			"kelas":         c.FormValue("kelas"),
-			"jurusan":       c.FormValue("jurusan"),
+			"kelas_id":      c.FormValue("kelas"),
+			"jurusan_id":    c.FormValue("jurusan"),
 			"alamat":        c.FormValue("alamat"),
 			"nama_wali":     c.FormValue("nama_wali"),
 			"no_hp":         c.FormValue("no_hp"),

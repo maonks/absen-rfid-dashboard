@@ -67,15 +67,13 @@
       </div>
 
       <button
-        type="button"
-        hx-get="/absensi/bulanan/edit-mode"
+        hx-get="/absensi/bulanan/table-edit?bulan={{ .SelectedMonth }}&tahun={{ .SelectedYear }}"
         hx-target="#absensi-bulanan"
-        hx-swap="outerHTML"
-        class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800"
+        hx-swap="innerHTML"
+        class="px-3 py-1 rounded bg-slate-700 text-white"
       >
         ✏️ Edit
       </button>
-
 
     </div>
 
@@ -118,118 +116,12 @@
 </div>
 
 
-
-
  <!-- ===== Tabel 30 Hari ===== -->
   <div
     id="absensi-bulanan"
     hx-get="/absensi/bulanan/table"
-    hx-trigger="refresh"
-    hx-swap="outerHTML">
-
-      <div class="overflow-x-auto border rounded-lg shadow-sm">
-
-        <table class="min-w-full text-[11px] border-collapse">
-
-          <!-- HEADER -->
-          <thead class="sticky-header">
-            <tr>
-              <th class="px-2 py-2 border text-center w-10">No</th>
-              <th class="px-3 py-2 border text-left w-48 sticky-name">Nama</th>
-
-              {{ range .Days }}
-                <th class="px-2 py-2 border text-center">
-                  {{ . }}
-                </th>
-              {{ end }}
-            </tr>
-          </thead>
-
-          <!-- BODY -->
-          <tbody>
-          {{ range $i, $row := .Rows }}
-            <tr class="hover:bg-slate-50 transition">
-
-              <!-- NO -->
-              <td class="px-2 py-1 text-center border">
-                {{ add $i 1 }}
-              </td>
-
-              <!-- NAMA -->
-              <td class="px-3 py-1 border sticky-name font-semibold">
-                {{ $row.Nama }}
-              </td>
-
-              <!-- DAY CELLS -->
-                {{ range $.Days }}
-                  {{ $cell := index $row.Hari . }}
-
-                  <td class="px-1 py-1 border text-center align-middle">
-
-                  {{ if not $.EditMode }}
-
-                    <!-- ================= VIEW MODE ================= -->
-                    {{ if not $cell }}
-                      <div class="cell bg-slate-200 text-slate-500 rounded py-1">-</div>
-
-                    {{ else if eq $cell.Status "LATE" }}
-                      <div class="cell late bg-red-500 text-white rounded py-1">
-                        {{ $cell.Masuk }}
-                      </div>
-
-                    {{ else if eq $cell.Status "OK" }}
-                      <div class="cell bg-green-500 text-white rounded py-1">
-                        {{ $cell.Masuk }}
-                      </div>
-
-                    {{ else if eq $cell.Status "IJIN" }}
-                      <div class="cell bg-blue-500 text-white rounded py-1">
-                        IJ
-                      </div>
-
-                    {{ else if eq $cell.Status "SAKIT" }}
-                      <div class="cell bg-purple-500 text-white rounded py-1">
-                        SK
-                      </div>
-                    {{ end }}
-
-                  {{ else }}
-
-                    <!-- ================= EDIT MODE ================= -->
-                    <select
-                      name="status"
-                      class="
-                        cell cell-select
-                        w-full
-                        border border-slate-300
-                        focus:outline-none focus:ring-0
-                        hover:border-slate-400
-                      "
-                      hx-post="/absensi/bulanan/update"
-                      hx-trigger="change"
-                      hx-vals='{
-                        "user_id": "{{ $row.ID }}",
-                        "tanggal": "{{ . }}"
-                      }'
-                    >
-                      <option value="">-</option>
-                      <option value="OK"    {{ if and $cell (eq $cell.Status "OK") }}selected{{ end }}>Hadir</option>
-                      <option value="LATE"  {{ if and $cell (eq $cell.Status "LATE") }}selected{{ end }}>Terlambat</option>
-                      <option value="IJIN"  {{ if and $cell (eq $cell.Status "IJIN") }}selected{{ end }}>IJ</option>
-                      <option value="SAKIT" {{ if and $cell (eq $cell.Status "SAKIT") }}selected{{ end }}>SK</option>
-                    </select>
-
-                  {{ end }}
-
-                  </td>
-                {{ end }}
-
-
-            </tr>
-          {{ end }}
-          </tbody>
-
-         </table>
-      </div>
-    </div>
+    hx-trigger="load"
+    hx-swap="innerHTML">
+    <!-- di isi oleh data bulanan/table -->
+  </div>
 </div>

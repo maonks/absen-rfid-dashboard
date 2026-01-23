@@ -54,15 +54,17 @@ func WebRoutes(app *fiber.App, db *gorm.DB) {
 
 	pakaijwt.Get("/kartu", webcontroller.KartuPage(db))
 
-	// web_routes.go
-	app.Get(
-		"/absensi/bulanan",
-		webcontroller.AbsensiBulananPage(db),
-	)
+	// Absensi Bulanan
+	app.Get("/absensi/bulanan",	webcontroller.AbsensiBulananPage(db))
 
-	app.Get(
-		"/absensi/bulanan/table",
-		webcontroller.AbsensiBulananTable(db),
-	)
+	app.Get("/absensi/bulanan/table",webcontroller.AbsensiBulananTable(db))
+
+	app.Post("/absensi/bulanan/update", webcontroller.AbsensiUpdate(db))
+
+	app.Get("/absensi/bulanan/table-edit",webcontroller.AbsensiBulananTableEdit(db))
+
+	app.Post("/absensi/hari/libur", webcontroller.SetHariLibur(db))
+
+
 
 }
