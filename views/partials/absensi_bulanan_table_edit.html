@@ -58,25 +58,29 @@
             <select
               name="status"
               class="
-                cell
+                
                 w-full
-                text-slate-500
+                text-white
                 text-center
+                align-middle
                 border border-slate-300
                 rounded
+                px-1
+                py-1
             
                 focus:outline-none
                 hover:border-slate-400
                 appearance-none
 
-                pr-2
+                
                 cell cell-select 
                 
-                {{ if eq $cell.Status "OK" }}bg-green-200{{ end }}
-                {{ if eq $cell.Status "LATE" }}bg-red-200{{ end }}
-                {{ if eq $cell.Status "IJIN" }}bg-blue-200{{ end }}
-                {{ if eq $cell.Status "SAKIT" }}bg-yellow-200{{ end }}
-                {{ if eq $cell.Status "ALPA" }}bg-slate-200{{ end }}"
+                {{ if eq $cell.Status "OK" }}bg-green-500{{ end }}
+                {{ if eq $cell.Status "LATE" }}bg-red-500{{ end }}
+                {{ if eq $cell.Status "IJIN" }}bg-blue-500{{ end }}
+                {{ if eq $cell.Status "SAKIT" }}bg-purple-500{{ end }}
+                {{ if eq $cell.Status "ALPA" }}bg-slate-500{{ end }}
+                {{ if eq $cell.Status "LIBUR" }}bg-orange-500{{ end }}"
 
               hx-post="/absensi/bulanan/update"
               hx-trigger="change"
@@ -93,7 +97,7 @@
               <option value="IJIN"  {{ if and $cell (eq $cell.Status "IJIN") }}selected{{ end }}>IJIN</option>
               <option value="SAKIT" {{ if and $cell (eq $cell.Status "SAKIT") }}selected{{ end }}>SAKIT</option>
               <option value="ALPA"  {{ if and $cell (eq $cell.Status "ALPA") }}selected{{ end }}>ALPA</option>              
-                <option value="LIBUR" {{ if and $cell (eq $cell.Status "LIBUR") }}selected{{ end }}>LIBUR</option>
+              <option value="LIBUR" {{ if and $cell (eq $cell.Status "LIBUR") }}selected{{ end }}>LIBUR</option>
             </select>
 
             

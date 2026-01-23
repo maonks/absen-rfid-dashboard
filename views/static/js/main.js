@@ -12,7 +12,7 @@
 //Script Websocket ==================================================================================
 
   // const ws = new WebSocket("ws://192.168.1.100:8000/websocket");
-  const ws = new WebSocket("wss://renna-symphystic-santana.ngrok-free.dev/websocket");
+  const ws = new WebSocket("wss://absenrfid.mainsambilbelajar.com/websocket");
   ws.onmessage = (e) => {
 
     let data;
@@ -56,7 +56,7 @@
       =============================== */
       const bulanan = document.getElementById("absensi-bulanan");
       if (bulanan) {
-        htmx.trigger(bulanan, "refresh");
+        htmx.trigger(bulanan, "reload");
       }
     }
 
