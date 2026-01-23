@@ -2,6 +2,7 @@
 package webcontroller
 
 import (
+	"sort"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -102,6 +103,11 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 			WHERE EXTRACT(MONTH FROM ast.tanggal) = ?
 			AND EXTRACT(YEAR FROM ast.tanggal) = ?
 		`, month, year).Scan(&statuses)
+
+		// urutkan slice agar nama teratur asc
+		sort.Slice(rows, func(i, j int) bool {
+			return rows[i].Nama < rows[j].Nama
+		})
 
 		// ==== KIRIM KE VIEW ====
 		return utils.Render(c, "pages/absensi_bulanan", fiber.Map{
@@ -453,6 +459,10 @@ func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 		for _, r := range rowMap {
 			rows = append(rows, *r)
 		}
+
+		sort.Slice(rows, func(i, j int) bool {
+			return rows[i].Nama < rows[j].Nama
+		})
 
 		return utils.Render(c, "partials/absensi_bulanan_table", fiber.Map{
 			"Days":          days,

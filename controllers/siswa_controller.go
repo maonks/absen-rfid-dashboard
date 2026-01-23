@@ -59,7 +59,7 @@ func StoreSiswa(db *gorm.DB) fiber.Handler {
 		jurusanID, err := strconv.ParseUint(jurusanStr, 10, 64)
 
 		if err != nil {
-			return c.Status(400).SendString("Jurusan Salah")
+			return c.Status(405).SendString("Jurusan Salah")
 		}
 
 		siswa := models.Siswa{
