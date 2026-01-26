@@ -55,40 +55,27 @@
 
           <td class="px-1 py-1 border text-center align-middle">
 
-            <select
-              name="status"
-              class="
-                
-                w-full
-                text-white
-                text-center
-                align-middle
-                border border-slate-300
-                rounded
-                px-1
-                py-1
-            
-                focus:outline-none
-                hover:border-slate-400
-                appearance-none
+<select
+  name="status"
+  class="
+    w-full text-white text-center border border-slate-300
+    rounded px-1 py-1 appearance-none cell
+    {{ if eq $cell.Status "OK" }}bg-green-500{{ end }}
+    {{ if eq $cell.Status "LATE" }}bg-red-500{{ end }}
+    {{ if eq $cell.Status "IJIN" }}bg-blue-500{{ end }}
+    {{ if eq $cell.Status "SAKIT" }}bg-purple-500{{ end }}
+    {{ if eq $cell.Status "ALPA" }}bg-slate-500{{ end }}
+    {{ if eq $cell.Status "LIBUR" }}bg-orange-500{{ end }}"
+  hx-post="/absensi/bulanan/update"
+  hx-trigger="change"
+  hx-vals='{
+    "user_id": "{{ $row.ID }}",
+    "tanggal": "{{ . }}",
+    "bulan": "{{ $.SelectedMonth }}",
+    "tahun": "{{ $.SelectedYear }}"
+  }'
+>
 
-                
-                cell cell-select 
-                
-                {{ if eq $cell.Status "OK" }}bg-green-500{{ end }}
-                {{ if eq $cell.Status "LATE" }}bg-red-500{{ end }}
-                {{ if eq $cell.Status "IJIN" }}bg-blue-500{{ end }}
-                {{ if eq $cell.Status "SAKIT" }}bg-purple-500{{ end }}
-                {{ if eq $cell.Status "ALPA" }}bg-slate-500{{ end }}
-                {{ if eq $cell.Status "LIBUR" }}bg-orange-500{{ end }}"
-
-              hx-post="/absensi/bulanan/update"
-              hx-trigger="change"
-              hx-vals='{
-                "user_id": "{{ $row.ID }}",
-                "tanggal": "{{ . }}"
-              }'
-            >
               <option value="PENDING" 
                 {{ if or (eq $cell.Status "") (eq $cell.Status "PENDING") }}selected{{ end }}disabled>-</option>
 

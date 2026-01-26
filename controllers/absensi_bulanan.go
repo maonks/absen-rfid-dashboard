@@ -235,6 +235,8 @@ func AbsensiUpdate(db *gorm.DB) fiber.Handler {
 			UserID  uint   `form:"user_id"`
 			Tanggal int    `form:"tanggal"`
 			Status  string `form:"status"`
+			Bulan   int    `form:"bulan"`
+			Tahun   int    `form:"tahun"`
 		}
 
 		var req Req
@@ -242,8 +244,8 @@ func AbsensiUpdate(db *gorm.DB) fiber.Handler {
 			return c.SendStatus(400)
 		}
 
-		now := time.Now()
-		tgl := time.Date(now.Year(), now.Month(), req.Tanggal, 0, 0, 0, 0, time.Local)
+		// ✅ pakai bulan & tahun dari request (bukan time.Now)
+		tgl := time.Date(req.Tahun, time.Month(req.Bulan), req.Tanggal, 0, 0, 0, 0, time.Local)
 
 		if req.Status == "LIBUR" {
 

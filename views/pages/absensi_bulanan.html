@@ -66,24 +66,29 @@
         <span>Sakit</span>
       </div>
 
-      <button
-        hx-get="/absensi/bulanan/table-edit?bulan={{ .SelectedMonth }}&tahun={{ .SelectedYear }}"
-        hx-target="#absensi-bulanan"
-        hx-swap="innerHTML"
-        class="px-3 py-1 rounded bg-slate-700 text-white"
-      >
-        ✏️ Edit
-      </button>
+<button
+  type="button"
+  hx-get="/absensi/bulanan/table-edit"
+  hx-include="#filter-form"
+  hx-target="#absensi-bulanan"
+  hx-swap="innerHTML"
+  class="px-3 py-1 rounded bg-slate-700 text-white"
+>
+  ✏️ Edit
+</button>
+
 
     </div>
 
       <!-- ===== FILTER (KANAN) ===== -->
-    <form
-      hx-get="/absensi/bulanan/table"
-      hx-target="#absensi-bulanan"
-      hx-swap="outerHTML"
-      class="flex items-center gap-2 text-[11px]"
-    >
+<form
+  id="filter-form"
+  hx-get="/absensi/bulanan/table"
+  hx-target="#absensi-bulanan"
+  hx-swap="outerHTML"
+  class="flex items-center gap-2 text-[11px]"
+>
+
 
       <!-- BULAN -->
       <select name="bulan" class="border rounded px-2 py-1 bg-white">
