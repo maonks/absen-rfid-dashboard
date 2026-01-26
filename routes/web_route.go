@@ -55,16 +55,16 @@ func WebRoutes(app *fiber.App, db *gorm.DB) {
 	pakaijwt.Get("/kartu", webcontroller.KartuPage(db))
 
 	// Absensi Bulanan
-	app.Get("/absensi/bulanan",	webcontroller.AbsensiBulananPage(db))
+	pakaijwt.Get("/absensi/bulanan", webcontroller.AbsensiBulananPage(db))
+	pakaijwt.Get("/absensi/bulanan/table", webcontroller.AbsensiBulananTable(db))
+	pakaijwt.Post("/absensi/bulanan/update", webcontroller.AbsensiUpdate(db))
+	pakaijwt.Get("/absensi/bulanan/table-edit", webcontroller.AbsensiBulananTableEdit(db))
+	pakaijwt.Post("/absensi/hari/libur", webcontroller.SetHariLibur(db))
 
-	app.Get("/absensi/bulanan/table",webcontroller.AbsensiBulananTable(db))
+	// Report
 
-	app.Post("/absensi/bulanan/update", webcontroller.AbsensiUpdate(db))
-
-	app.Get("/absensi/bulanan/table-edit",webcontroller.AbsensiBulananTableEdit(db))
-
-	app.Post("/absensi/hari/libur", webcontroller.SetHariLibur(db))
-
-
+	pakaijwt.Get("/report", webcontroller.ReportPage(db))
+	pakaijwt.Get("/report/bulanan/kelas", webcontroller.ReportBulananKelasPage(db))
+	pakaijwt.Get("/report/bulanan/kelas/excel", webcontroller.ExportReportBulananKelasExcel(db))
 
 }

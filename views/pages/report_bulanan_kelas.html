@@ -1,0 +1,94 @@
+<h2 class="text-lg font-bold mb-3">Report Bulanan Per Kelas</h2>
+
+<!-- FILTER BAR -->
+<form method="GET"
+      action="/report/bulanan/kelas"
+      class="flex flex-wrap items-center gap-2 text-[11px] mb-3">
+
+  <!-- KELAS -->
+  <select name="kelas_id" class="border rounded px-2 py-1 bg-white">
+    <option value="">Pilih Kelas</option>
+    {{ range .Kelas }}
+      <option value="{{ .ID }}" {{ if eq $.KelasID .ID }}selected{{ end }}>
+        {{ .Nama }}
+      </option>
+    {{ end }}
+  </select>
+
+  <!-- JURUSAN -->
+  <select name="jurusan_id" class="border rounded px-2 py-1 bg-white">
+    <option value="">Semua Jurusan</option>
+    {{ range .Jurusan }}
+      <option value="{{ .ID }}" {{ if eq $.JurusanID .ID }}selected{{ end }}>
+        {{ .Nama }}
+      </option>
+    {{ end }}
+  </select>
+
+  <!-- BULAN -->
+  <select name="bulan" class="border rounded px-2 py-1 bg-white">
+    <option value="">Pilih Bulan</option>
+    {{ range .BulanList }}
+      <option value="{{ .Value }}" {{ if eq $.Bulan .Value }}selected{{ end }}>
+        {{ .Label }}
+      </option>
+    {{ end }}
+  </select>
+
+  <!-- TAHUN -->
+  <select name="tahun" class="border rounded px-2 py-1 bg-white">
+    {{ range .TahunList }}
+      <option value="{{ . }}" {{ if eq $.Tahun . }}selected{{ end }}>
+        {{ . }}
+      </option>
+    {{ end }}
+  </select>
+
+  <!-- BUTTON -->
+  <button type="submit"
+          class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800">
+    🔍 Generate
+  </button>
+
+  {{ if .Rows }}
+  <a href="/report/bulanan/kelas/excel?kelas_id={{.KelasID}}&jurusan_id={{.JurusanID}}&bulan={{.Bulan}}&tahun={{.Tahun}}"
+     class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">
+     📊 Export Excel
+  </a>
+  {{ end }}
+
+</form>
+
+<!-- TABLE -->
+<div class="overflow-x-auto">
+<table class="w-full border text-[11px]">
+  <thead class="bg-slate-100 sticky-header">
+    <tr>
+      <th class="border px-2 py-1">No</th>
+      <th class="border px-2 py-1">Nama</th>
+      <th class="border px-2 py-1">Kelas</th>
+      <th class="border px-2 py-1">Jurusan</th>
+      <th class="border px-2 py-1">Hadir</th>
+      <th class="border px-2 py-1">Telat</th>
+      <th class="border px-2 py-1">Sakit</th>
+      <th class="border px-2 py-1">Izin</th>
+      <th class="border px-2 py-1">Alpa</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{ range $i,$row:= .Rows }}
+    <tr class="border-b cell">
+      <td class="border px-2 py-1 text-center">{{ add $i 1 }}</td>
+      <td class="border px-2 py-1 sticky-name">{{ .Nama }}</td>
+      <td class="border px-2 py-1">{{ .Kelas }}</td>
+      <td class="border px-2 py-1">{{ .Jurusan }}</td>
+      <td class="border px-2 py-1 text-center">{{ .Hadir }}</td>
+      <td class="border px-2 py-1 text-center">{{ .Telat }}</td>
+      <td class="border px-2 py-1 text-center">{{ .Sakit }}</td>
+      <td class="border px-2 py-1 text-center">{{ .Izin }}</td>
+      <td class="border px-2 py-1 text-center">{{ .Alpa }}</td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>
+</div>

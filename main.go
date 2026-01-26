@@ -25,6 +25,14 @@ func main() {
 		return a + b
 	})
 
+	engine.AddFunc("seq", func(from, to int) []int {
+		var s []int
+		for i := from; i <= to; i++ {
+			s = append(s, i)
+		}
+		return s
+	})
+
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})

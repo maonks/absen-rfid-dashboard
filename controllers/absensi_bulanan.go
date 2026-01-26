@@ -17,11 +17,9 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 
 		now := time.Now()
 
-		// ==== AMBIL QUERY PARAM ====
 		month := c.QueryInt("bulan", int(now.Month()))
 		year := c.QueryInt("tahun", now.Year())
 
-		// ==== JUMLAH HARI DALAM BULAN ====
 		lastDay := time.Date(year, time.Month(month)+1, 0, 0, 0, 0, 0, time.Local).Day()
 
 		days := make([]int, lastDay)
@@ -29,7 +27,6 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 			days[i-1] = i
 		}
 
-		// ==== RAW DATA ====
 		type rawRow struct {
 			Nama   string
 			Tgl    int
@@ -54,7 +51,6 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 			ORDER BY s.nama ASC
 		`, month, year).Scan(&raws)
 
-		// ==== MAPPING KE TABLE ====
 		rowMap := map[string]*models.AbsensiRow{}
 
 		for _, r := range raws {
@@ -83,33 +79,10 @@ func AbsensiBulananPage(db *gorm.DB) fiber.Handler {
 			rows = append(rows, *r)
 		}
 
-		//=======STATUS ROW =====
-
-		type statusRow struct {
-			Nama   string
-			Tgl    int
-			Status string
-		}
-
-		var statuses []statusRow
-
-		db.Raw(`
-			SELECT
-			s.nama,
-			EXTRACT(DAY FROM ast.tanggal)::int AS tgl,
-			ast.status
-			FROM absensi_statuses ast
-			JOIN siswas s ON s.id = ast.siswa_id
-			WHERE EXTRACT(MONTH FROM ast.tanggal) = ?
-			AND EXTRACT(YEAR FROM ast.tanggal) = ?
-		`, month, year).Scan(&statuses)
-
-		// urutkan slice agar nama teratur asc
 		sort.Slice(rows, func(i, j int) bool {
 			return rows[i].Nama < rows[j].Nama
 		})
 
-		// ==== KIRIM KE VIEW ====
 		return utils.Render(c, "pages/absensi_bulanan", fiber.Map{
 			"Days":          days,
 			"Rows":          rows,
@@ -131,17 +104,14 @@ func AbsensiBulananTableEdit(db *gorm.DB) fiber.Handler {
 		month := c.QueryInt("bulan", int(now.Month()))
 		year := c.QueryInt("tahun", now.Year())
 
-		// ==== DAYS ====
 		lastDay := time.Date(year, time.Month(month)+1, 0, 0, 0, 0, 0, time.Local).Day()
 		days := make([]int, lastDay)
 		for i := 1; i <= lastDay; i++ {
 			days[i-1] = i
 		}
 
-		// ==== LIBUR MAP (GLOBAL) ====
 		liburMap := getLiburMap(db, month, year)
 
-		// ==== RAW TAP DATA ====
 		type rawRow struct {
 			ID    uint
 			Nama  string
@@ -167,7 +137,6 @@ func AbsensiBulananTableEdit(db *gorm.DB) fiber.Handler {
 
 		rowMap := map[uint]*models.AbsensiRow{}
 
-		// ==== HASIL TAP → OK / LATE (BELUM FINAL) ====
 		for _, r := range raws {
 			if _, ok := rowMap[r.ID]; !ok {
 				rowMap[r.ID] = &models.AbsensiRow{
@@ -191,34 +160,34 @@ func AbsensiBulananTableEdit(db *gorm.DB) fiber.Handler {
 			}
 		}
 
-		// ==== STATUS FINAL PER HARI ====
 		for _, row := range rowMap {
 			for _, d := range days {
 
-				// 🔥 1. LIBUR GLOBAL (PALING KUAT)
 				if liburMap[d] {
 					row.Hari[d] = &models.HariCell{Status: "LIBUR"}
 					continue
 				}
 
-				// 2. Sudah ada tap → pakai hasil tap
 				if _, ok := row.Hari[d]; ok {
+
+					tgl := time.Date(year, time.Month(month), d, 0, 0, 0, 0, time.Local)
+
+					// ✅ SIMPAN OTOMATIS OK / LATE
+					saveAutoStatus(db, row.ID, tgl, row.Hari[d].Status)
+
 					continue
 				}
 
 				tgl := time.Date(year, time.Month(month), d, 0, 0, 0, 0, time.Local)
 
-				// 3. Hari lewat & tidak tap → ALPA
 				if tgl.Before(today) {
 					row.Hari[d] = &models.HariCell{Status: "ALPA"}
 				} else {
-					// 4. Hari belum lewat → PENDING
 					row.Hari[d] = &models.HariCell{Status: ""}
 				}
 			}
 		}
 
-		// ==== MANUAL OVERRIDE PER SISWA (KECUALI LIBUR) ====
 		type statusRow struct {
 			SiswaID uint
 			Tgl     int
@@ -241,11 +210,14 @@ func AbsensiBulananTableEdit(db *gorm.DB) fiber.Handler {
 			}
 		}
 
-		// ==== MAP → SLICE ====
 		var rows []models.AbsensiRow
 		for _, r := range rowMap {
 			rows = append(rows, *r)
 		}
+
+		sort.Slice(rows, func(i, j int) bool {
+			return rows[i].Nama < rows[j].Nama
+		})
 
 		return utils.Render(c, "partials/absensi_bulanan_table_edit", fiber.Map{
 			"Days":          days,
@@ -256,7 +228,6 @@ func AbsensiBulananTableEdit(db *gorm.DB) fiber.Handler {
 	}
 }
 
-// ini untuk simpan perubahan
 func AbsensiUpdate(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
@@ -272,20 +243,10 @@ func AbsensiUpdate(db *gorm.DB) fiber.Handler {
 		}
 
 		now := time.Now()
-		tgl := time.Date(
-			now.Year(),
-			now.Month(),
-			req.Tanggal,
-			0, 0, 0, 0,
-			time.Local,
-		)
+		tgl := time.Date(now.Year(), now.Month(), req.Tanggal, 0, 0, 0, 0, time.Local)
 
-		// =======================
-		// 🔥 JIKA STATUS = LIBUR
-		// =======================
 		if req.Status == "LIBUR" {
 
-			// simpan hari libur (GLOBAL)
 			var hari models.AbsensiHari
 			err := db.Where("tanggal = ?", tgl).First(&hari).Error
 
@@ -296,19 +257,13 @@ func AbsensiUpdate(db *gorm.DB) fiber.Handler {
 				})
 			}
 
-			// hapus semua status siswa di tanggal itu
 			db.Where("tanggal = ?", tgl).Delete(&models.AbsensiStatus{})
 
 			return c.SendStatus(200)
 		}
 
-		// =======================
-		// NORMAL (NON-LIBUR)
-		// =======================
-
 		var rec models.AbsensiStatus
-		err := db.Where("siswa_id = ? AND tanggal = ?", req.UserID, tgl).
-			First(&rec).Error
+		err := db.Where("siswa_id = ? AND tanggal = ?", req.UserID, tgl).First(&rec).Error
 
 		if err == gorm.ErrRecordNotFound {
 			rec = models.AbsensiStatus{
@@ -325,30 +280,23 @@ func AbsensiUpdate(db *gorm.DB) fiber.Handler {
 	}
 }
 
-// ini untuk websocket auto refresh
 func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
 		now := time.Now()
-		today := time.Date(
-			now.Year(), now.Month(), now.Day(),
-			0, 0, 0, 0, time.Local,
-		)
+		today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.Local)
 
 		month := c.QueryInt("bulan", int(now.Month()))
 		year := c.QueryInt("tahun", now.Year())
 
-		// ==== DAYS ====
 		lastDay := time.Date(year, time.Month(month)+1, 0, 0, 0, 0, 0, time.Local).Day()
 		days := make([]int, lastDay)
 		for i := 1; i <= lastDay; i++ {
 			days[i-1] = i
 		}
 
-		// ==== LIBUR GLOBAL ====
 		liburMap := getLiburMap(db, month, year)
 
-		// ==== RAW TAP DATA ====
 		type rawRow struct {
 			ID    uint
 			Nama  string
@@ -372,10 +320,8 @@ func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 			ORDER BY s.nama ASC
 		`, month, year).Scan(&raws)
 
-		// ==== MAP SISWA ====
 		rowMap := map[uint]*models.AbsensiRow{}
 
-		// TAP → OK / LATE
 		for _, r := range raws {
 			if _, ok := rowMap[r.ID]; !ok {
 				rowMap[r.ID] = &models.AbsensiRow{
@@ -400,34 +346,34 @@ func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 			}
 		}
 
-		// ==== STATUS FINAL PER HARI ====
 		for _, row := range rowMap {
 			for _, d := range days {
 
-				// 🔥 1. LIBUR GLOBAL (PALING KUAT)
 				if liburMap[d] {
 					row.Hari[d] = &models.HariCell{Status: "LIBUR"}
 					continue
 				}
 
-				// 2. Sudah ada tap → pakai hasil tap
 				if _, ok := row.Hari[d]; ok {
+
+					tgl := time.Date(year, time.Month(month), d, 0, 0, 0, 0, time.Local)
+
+					// ✅ SIMPAN OTOMATIS OK / LATE
+					saveAutoStatus(db, row.ID, tgl, row.Hari[d].Status)
+
 					continue
 				}
 
 				tgl := time.Date(year, time.Month(month), d, 0, 0, 0, 0, time.Local)
 
-				// 3. Hari lewat & tidak tap → ALPA
 				if tgl.Before(today) {
 					row.Hari[d] = &models.HariCell{Status: "ALPA"}
 				} else {
-					// 4. Hari belum lewat → pending
 					row.Hari[d] = &models.HariCell{Status: ""}
 				}
 			}
 		}
 
-		// ==== MANUAL OVERRIDE PER SISWA (KECUALI LIBUR) ====
 		type statusRow struct {
 			SiswaID uint
 			Tgl     int
@@ -454,7 +400,6 @@ func AbsensiBulananTable(db *gorm.DB) fiber.Handler {
 			}
 		}
 
-		// ==== MAP → SLICE ====
 		var rows []models.AbsensiRow
 		for _, r := range rowMap {
 			rows = append(rows, *r)
@@ -477,8 +422,8 @@ func SetHariLibur(db *gorm.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 
 		type Req struct {
-			Tanggal string `form:"tanggal"` // YYYY-MM-DD
-			Status  string `form:"status"`  // LIBUR | AKTIF
+			Tanggal string `form:"tanggal"`
+			Status  string `form:"status"`
 		}
 
 		var req Req
@@ -528,4 +473,29 @@ func getLiburMap(db *gorm.DB, month, year int) map[int]bool {
 		libur[r.Tgl] = true
 	}
 	return libur
+}
+
+// =======================
+// SIMPAN OTOMATIS OK / LATE
+// =======================
+func saveAutoStatus(db *gorm.DB, siswaID uint, tgl time.Time, status string) {
+
+	if status != "OK" && status != "LATE" {
+		return
+	}
+
+	var rec models.AbsensiStatus
+	err := db.Where("siswa_id = ? AND tanggal = ?", siswaID, tgl).First(&rec).Error
+
+	if err == gorm.ErrRecordNotFound {
+		db.Create(&models.AbsensiStatus{
+			SiswaID: siswaID,
+			Tanggal: tgl,
+			Status:  status,
+		})
+	} else {
+		if rec.Status == "OK" || rec.Status == "LATE" {
+			db.Model(&rec).Update("status", status)
+		}
+	}
 }

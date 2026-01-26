@@ -133,9 +133,15 @@
         <span class="text-lg">👨‍🎓</span>
         <span>Data Siswa</span>
       </a>
-         <a href="/kartu" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-700 transition">
+
+      <a href="/kartu" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-700 transition">
         <span class="text-lg">💳</span>
         <span>Daftar Kartu</span>
+      </a>
+
+      <a href="/report" class="flex items-center gap-3 px-4 py-3 hover:bg-slate-700 transition">
+        <span class="text-lg">📅</span>
+        <span>Export Report</span>
       </a>
 
       {{ if eq .AuthUser.Role "admin" }}
