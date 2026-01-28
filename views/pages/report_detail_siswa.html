@@ -1,0 +1,150 @@
+<style>
+/* tampil di layar saja */
+.screen-only { display:block }
+.print-only { display:none }
+
+@media print {
+  body * { visibility:hidden }
+  #print-area, #print-area * { visibility:visible }
+  #print-area { position:absolute; left:0; top:0; width:100% }
+  .print-only { display:block }
+  .screen-only { display:none }
+
+  table { width:100%; border-collapse:collapse; font-size:11px }
+  th,td { border:1px solid black; padding:4px }
+  h2 { text-align:center; margin-bottom:8px }
+
+  @page { size:A4 landscape; margin:10mm }
+}
+
+/* default: desktop */
+.th-mobile { display:none }
+.th-desktop { display:inline }
+
+/* mobile */
+@media (max-width:640px){
+  .th-mobile{display:inline}
+  .th-desktop{display:none}
+  table{font-size:10px}
+  th,td{padding:2px!important}
+}
+</style>
+
+<h2 class="text-lg font-bold mb-3 screen-only">
+  Report Detail Siswa
+</h2>
+
+<!-- ================= FILTER BAR ================= -->
+<form method="GET"
+      action="/report/detail-siswa"
+      class="screen-only w-full mb-3 text-[11px]">
+
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-2">
+
+    <!-- BARIS FILTER -->
+    <div class="flex justify-center gap-2 sm:justify-start">
+
+      <!-- KELAS -->
+      <select name="kelas_id" class="border rounded px-2 py-1 bg-white">
+        <option value="">Kelas</option>
+        {{ range .Kelas }}
+          <option value="{{ .ID }}" {{ if eq $.KelasID .ID }}selected{{ end }}>
+            {{ .Nama }}
+          </option>
+        {{ end }}
+      </select>
+
+      <!-- JURUSAN -->
+      <select name="jurusan_id" class="border rounded px-2 py-1 bg-white">
+        <option value="">Jurusan</option>
+        {{ range .Jurusan }}
+          <option value="{{ .ID }}" {{ if eq $.JurusanID .ID }}selected{{ end }}>
+            {{ .Nama }}
+          </option>
+        {{ end }}
+      </select>
+
+    </div>
+
+    <!-- BARIS BUTTON -->
+    <div class="flex justify-center gap-2 sm:justify-start">
+
+      <button type="submit"
+              class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800">
+        🔍 Generate
+      </button>
+
+      <button type="button"
+              onclick="window.print()"
+              class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">
+        🖨️ Print
+      </button>
+
+      {{ if .Rows }}
+      <button type="button"
+        onclick="window.location.href='/report/detail-siswa/excel?kelas_id={{.KelasID}}&jurusan_id={{.JurusanID}}&bulan={{.Bulan}}&tahun={{.Tahun}}'"
+        class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">
+        📊 Excel
+      </button>
+      {{ end }}
+
+    </div>
+
+  </div>
+</form>
+
+<!-- ================= PRINT AREA ================= -->
+<div id="print-area">
+
+  <h2 class="text-lg font-bold mb-3 text-center print-only">
+    Report Detail Siswa
+    {{ if .KelasID }} Kelas {{ .KelasName }}{{ end }}
+    {{ if .JurusanID }} - {{ .JurusanName }}{{ end }}
+    <br>
+    Periode: {{ .BulanLabel }} {{ .Tahun }}
+  </h2>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border text-[11px]">
+
+      <thead class="bg-slate-100 sticky-header">
+        <tr>
+          <th class="border px-2 py-1">No</th>
+          <th class="border px-2 py-1">NIS</th>
+          <th class="border px-2 py-1">Nama</th>
+          <th class="border px-2 py-1">JK</th>
+          <th class="border px-2 py-1">Tempat Lahir</th>
+          <th class="border px-2 py-1">Tanggal Lahir</th>
+          <th class="border px-2 py-1">Alamat</th>
+          <th class="border px-2 py-1">Wali</th>
+          <th class="border px-2 py-1">No HP</th>
+          <th class="border px-2 py-1">Status</th>
+          <th class="border px-2 py-1">Kelas</th>
+          <th class="border px-2 py-1">Jurusan</th>
+        </tr>
+      </thead>
+
+      <!-- ================= BODY ================= -->
+      <tbody>
+      {{ range $i,$row := .Rows }}
+      <tr class="border-b cell">
+        <td class="border px-2 py-1 text-center">{{ add $i 1 }}</td>
+        <td class="border px-2 py-1">{{ .NIS }}</td>
+        <td class="border px-2 py-1 sticky-name">{{ .Nama }}</td>
+        <td class="border px-2 py-1">{{ .JenisKelamin }}</td>
+        <td class="border px-2 py-1">{{ .TempatLahir }}</td>
+        <td class="border px-2 py-1">{{ .TanggalLahir.Format "02-01-2006" }}</td>
+        <td class="border px-2 py-1">{{ .Alamat }}</td>
+        <td class="border px-2 py-1">{{ .NamaWali }}</td>
+        <td class="border px-2 py-1">{{ .NoHP }}</td>
+        <td class="border px-2 py-1">{{ .Status }}</td>
+        <td class="border px-2 py-1">{{ .Kelas }}</td>
+        <td class="border px-2 py-1">{{ .Jurusan }}</td>
+      </tr>
+      {{ end }}
+      </tbody>
+
+    </table>
+  </div>
+
+</div>
