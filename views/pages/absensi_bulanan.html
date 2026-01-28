@@ -74,9 +74,30 @@
       hx-get="/absensi/bulanan/table"
       hx-target="#absensi-bulanan"
       hx-swap="outerHTML"
-      class="flex items-center gap-2 text-[11px]"
+      class="flex flex-wrap items-center gap-2 text-[11px]"
     >
 
+      <!-- KELAS -->
+      <select name="kelas_id" class="border rounded px-2 py-1 bg-white">
+       
+        {{ range .Kelas }}
+          <option value="{{ .ID }}"
+            {{ if eq .ID $.SelectedKelas }}selected{{ end }}>
+            {{ .Nama }}
+          </option>
+        {{ end }}
+      </select>
+
+      <!-- JURUSAN -->
+      <select name="jurusan_id" class="border rounded px-2 py-1 bg-white">
+       
+        {{ range .Jurusan }}
+          <option value="{{ .ID }}"
+            {{ if eq .ID $.SelectedJurusan }}selected{{ end }}>
+            {{ .Nama }}
+          </option>
+        {{ end }}
+      </select>
 
       <!-- BULAN -->
       <select name="bulan" class="border rounded px-2 py-1 bg-white">
@@ -115,6 +136,7 @@
         ✏️ Edit
       </button>
     </form>
+
 </div>
 
 

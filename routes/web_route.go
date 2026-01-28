@@ -66,5 +66,6 @@ func WebRoutes(app *fiber.App, db *gorm.DB) {
 	pakaijwt.Get("/report", webcontroller.ReportPage(db))
 	pakaijwt.Get("/report/bulanan/kelas", webcontroller.ReportBulananKelasPage(db))
 	pakaijwt.Get("/report/bulanan/kelas/excel", webcontroller.ExportReportBulananKelasExcel(db))
-
+	pakaijwt.Get("/report/bulanan/kelas-detail", webcontroller.ReportBulananDetailPage(db))
+	pakaijwt.Get("/report/bulanan/kelas-detail/excel", webcontroller.ExportReportDetailBulananKelasExcel(db))
 }
