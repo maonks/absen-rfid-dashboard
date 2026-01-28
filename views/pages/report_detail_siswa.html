@@ -3,6 +3,9 @@
 .screen-only { display:block }
 .print-only { display:none }
 
+/* sembunyikan kolom di mobile */
+.hide-mobile { display: table-cell; }
+
 @media print {
   body * { visibility:hidden }
   #print-area, #print-area * { visibility:visible }
@@ -17,22 +20,31 @@
   @page { size:A4 landscape; margin:10mm }
 }
 
-/* default: desktop */
-.th-mobile { display:none }
-.th-desktop { display:inline }
-
 /* mobile */
 @media (max-width:640px){
-  .th-mobile{display:inline}
-  .th-desktop{display:none}
   table{font-size:10px}
   th,td{padding:2px!important}
+  .hide-mobile{display:none}
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-only {
+    display: block;
+  }
 }
 </style>
 
 <h2 class="text-lg font-bold mb-3 screen-only">
   Report Detail Siswa
 </h2>
+
+<p class="mobile-only text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded px-2 py-1 mb-3 text-center">
+  ⚠️ Data mobile dibatasi. Gunakan Desktop / Print / Export Excel untuk data lengkap.
+</p>
 
 <!-- ================= FILTER BAR ================= -->
 <form method="GET"
@@ -41,10 +53,8 @@
 
   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-2">
 
-    <!-- BARIS FILTER -->
     <div class="flex justify-center gap-2 sm:justify-start">
 
-      <!-- KELAS -->
       <select name="kelas_id" class="border rounded px-2 py-1 bg-white">
         <option value="">Kelas</option>
         {{ range .Kelas }}
@@ -54,7 +64,6 @@
         {{ end }}
       </select>
 
-      <!-- JURUSAN -->
       <select name="jurusan_id" class="border rounded px-2 py-1 bg-white">
         <option value="">Jurusan</option>
         {{ range .Jurusan }}
@@ -66,7 +75,6 @@
 
     </div>
 
-    <!-- BARIS BUTTON -->
     <div class="flex justify-center gap-2 sm:justify-start">
 
       <button type="submit"
@@ -82,7 +90,7 @@
 
       {{ if .Rows }}
       <button type="button"
-        onclick="window.location.href='/report/detail-siswa/excel?kelas_id={{.KelasID}}&jurusan_id={{.JurusanID}}&bulan={{.Bulan}}&tahun={{.Tahun}}'"
+        onclick="window.location.href='/report/detail-siswa/excel?kelas_id={{.KelasID}}&jurusan_id={{.JurusanID}}'"
         class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">
         📊 Excel
       </button>
@@ -100,8 +108,6 @@
     Report Detail Siswa
     {{ if .KelasID }} Kelas {{ .KelasName }}{{ end }}
     {{ if .JurusanID }} - {{ .JurusanName }}{{ end }}
-    <br>
-    Periode: {{ .BulanLabel }} {{ .Tahun }}
   </h2>
 
   <div class="overflow-x-auto">
@@ -112,34 +118,39 @@
           <th class="border px-2 py-1">No</th>
           <th class="border px-2 py-1">NIS</th>
           <th class="border px-2 py-1">Nama</th>
-          <th class="border px-2 py-1">JK</th>
-          <th class="border px-2 py-1">Tempat Lahir</th>
-          <th class="border px-2 py-1">Tanggal Lahir</th>
-          <th class="border px-2 py-1">Alamat</th>
-          <th class="border px-2 py-1">Wali</th>
+
+          <th class="border px-2 py-1 hide-mobile">JK</th>
+          <th class="border px-2 py-1 hide-mobile">Tempat Lahir</th>
+          <th class="border px-2 py-1 hide-mobile">Tanggal Lahir</th>
+          <th class="border px-2 py-1 hide-mobile">Alamat</th>
+          <th class="border px-2 py-1 hide-mobile">Wali</th>
+
           <th class="border px-2 py-1">No HP</th>
-          <th class="border px-2 py-1">Status</th>
-          <th class="border px-2 py-1">Kelas</th>
-          <th class="border px-2 py-1">Jurusan</th>
+
+          <th class="border px-2 py-1 hide-mobile">Status</th>
+          <th class="border px-2 py-1 hide-mobile">Kelas</th>
+          <th class="border px-2 py-1 hide-mobile">Jurusan</th>
         </tr>
       </thead>
 
-      <!-- ================= BODY ================= -->
       <tbody>
       {{ range $i,$row := .Rows }}
-      <tr class="border-b cell">
+      <tr class="border-b">
         <td class="border px-2 py-1 text-center">{{ add $i 1 }}</td>
         <td class="border px-2 py-1">{{ .NIS }}</td>
-        <td class="border px-2 py-1 sticky-name">{{ .Nama }}</td>
-        <td class="border px-2 py-1">{{ .JenisKelamin }}</td>
-        <td class="border px-2 py-1">{{ .TempatLahir }}</td>
-        <td class="border px-2 py-1">{{ .TanggalLahir.Format "02-01-2006" }}</td>
-        <td class="border px-2 py-1">{{ .Alamat }}</td>
-        <td class="border px-2 py-1">{{ .NamaWali }}</td>
+        <td class="border px-2 py-1 font-semibold">{{ .Nama }}</td>
+
+        <td class="border px-2 py-1 hide-mobile">{{ .JenisKelamin }}</td>
+        <td class="border px-2 py-1 hide-mobile">{{ .TempatLahir }}</td>
+        <td class="border px-2 py-1 hide-mobile">{{ .TanggalLahir.Format "02-01-2006" }}</td>
+        <td class="border px-2 py-1 hide-mobile">{{ .Alamat }}</td>
+        <td class="border px-2 py-1 hide-mobile">{{ .NamaWali }}</td>
+
         <td class="border px-2 py-1">{{ .NoHP }}</td>
-        <td class="border px-2 py-1">{{ .Status }}</td>
-        <td class="border px-2 py-1">{{ .Kelas }}</td>
-        <td class="border px-2 py-1">{{ .Jurusan }}</td>
+
+        <td class="border px-2 py-1 hide-mobile">{{ .Status }}</td>
+        <td class="border px-2 py-1 hide-mobile">{{ .Kelas }}</td>
+        <td class="border px-2 py-1 hide-mobile">{{ .Jurusan }}</td>
       </tr>
       {{ end }}
       </tbody>

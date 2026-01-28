@@ -1,5 +1,5 @@
 <style>
-/* === PRINT & MOBILE STYLE (SAMA PERSIS) === */
+/* === PRINT & MOBILE STYLE === */
 .screen-only { display: block; }
 .print-only  { display: none; }
 
@@ -42,11 +42,39 @@
     margin: 10mm;
   }
 }
+
+/* === MOBILE MODE === */
+@media (max-width:640px) {
+  table { font-size:10px; }
+  th, td { padding:2px!important; }
+
+  /* SEMBUNYIKAN HARI KE-5 DST (hanya tampil 4 hari) */
+  .day-col:nth-child(n+7) {
+    display: none;
+  }
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .mobile-only {
+    display: block;
+  }
+}
+
 </style>
 
 <h2 class="text-lg font-bold mb-3 screen-only">
   Rekap Detail Absensi
 </h2>
+
+<p class="mobile-only text-xs bg-yellow-100 text-yellow-800 border border-yellow-300 rounded px-2 py-1 mb-3 text-center">
+  ⚠️ Data mobile dibatasi. Gunakan Desktop / Print / Export Excel untuk data lengkap.
+</p>
+
+
 
 <!-- FILTER -->
 <form method="GET"
@@ -55,7 +83,6 @@
 
   <div class="flex flex-col sm:flex-row gap-2">
 
-    <!-- BARIS FILTER -->
     <div class="flex justify-center gap-2">
 
       <select name="kelas_id" class="border rounded px-2 py-1">
@@ -76,7 +103,6 @@
         {{ end }}
       </select>
 
-
       <select name="bulan" class="border rounded px-2 py-1">
         <option value="">Bulan</option>
         {{ range .BulanList }}
@@ -96,7 +122,6 @@
 
     </div>
 
-    <!-- BARIS BUTTON -->
     <div class="flex justify-center gap-2">
       <button type="submit"
               class="px-3 py-1 bg-slate-700 text-white rounded">
@@ -138,7 +163,7 @@
         <th class="border px-2">No</th>
         <th class="border px-2">Nama</th>
         {{ range .Days }}
-          <th class="border px-2">{{ . }}</th>
+          <th class="border px-2 day-col">{{ . }}</th>
         {{ end }}
       </tr>
     </thead>
@@ -146,17 +171,13 @@
     <tbody>
       {{ range $i, $row := .Rows }}
       <tr>
-        <td class="border px-2 text-center">
-          {{ add $i 1 }}
-        </td>
+        <td class="border px-2 text-center">{{ add $i 1 }}</td>
 
-        <td class="border px-2 sticky-name">
-          {{ $row.Nama }}
-        </td>
+        <td class="border px-2 sticky-name">{{ $row.Nama }}</td>
 
         {{ range $.Days }}
           {{ $cell := index $row.Hari . }}
-          <td class="border px-1 text-center">
+          <td class="border px-1 text-center day-col">
 
             {{ if not $cell }}
               -
@@ -182,5 +203,4 @@
     </tbody>
 
   </table>
-
 </div>
