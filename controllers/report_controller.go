@@ -111,17 +111,45 @@ func ReportBulananKelasPage(db *gorm.DB) fiber.Handler {
 			tahun = time.Now().Year()
 		}
 
+		//untuk info report excel n print
+		var kelasName, jurusanName, bulanLabel string
+
+		if kelasID != 0 {
+			var k models.Kelas
+			if err := db.First(&k, kelasID).Error; err == nil {
+				kelasName = k.Nama
+			}
+		}
+
+		if jurusanID != 0 {
+			var j models.Jurusan
+			if err := db.First(&j, jurusanID).Error; err == nil {
+				jurusanName = j.Nama
+			}
+		}
+
+		for _, b := range getBulanList() {
+			if b.Value == bulan {
+				bulanLabel = b.Label
+				break
+			}
+		}
+
 		return utils.Render(c, "pages/report_bulanan_kelas", fiber.Map{
-			"Kelas":     kelas,
-			"Jurusan":   jurusan,
-			"Rows":      rows,
-			"KelasID":   kelasID,
-			"JurusanID": jurusanID,
-			"Bulan":     bulan,
-			"Tahun":     tahun,
-			"BulanList": getBulanList(),
-			"TahunList": getTahunList(),
+			"Kelas":       kelas,
+			"Jurusan":     jurusan,
+			"Rows":        rows,
+			"KelasID":     kelasID,
+			"JurusanID":   jurusanID,
+			"KelasName":   kelasName,
+			"JurusanName": jurusanName,
+			"Bulan":       bulan,
+			"BulanLabel":  bulanLabel,
+			"Tahun":       tahun,
+			"BulanList":   getBulanList(),
+			"TahunList":   getTahunList(),
 		}, "layouts/main")
+
 	}
 }
 
@@ -171,18 +199,58 @@ func ExportReportBulananKelasExcel(db *gorm.DB) fiber.Handler {
 
 		db.Raw(query, args...).Scan(&rows)
 
+		var kelasName, jurusanName string
+
+		if kelasID != 0 {
+			var k models.Kelas
+			if err := db.First(&k, kelasID).Error; err == nil {
+				kelasName = k.Nama
+			}
+		}
+
+		if jurusanID != 0 {
+			var j models.Jurusan
+			if err := db.First(&j, jurusanID).Error; err == nil {
+				jurusanName = j.Nama
+			}
+		}
+
+		bulanLabel := ""
+		for _, b := range getBulanList() {
+			if b.Value == bulan {
+				bulanLabel = b.Label
+				break
+			}
+		}
+
+		// BUAT FILE EXCEL
+
 		f := excelize.NewFile()
 		sheet := "Report"
 		f.SetSheetName("Sheet1", sheet)
 
+		title := "Report Bulanan"
+
+		if kelasName != "" {
+			title += " Kelas " + kelasName
+		}
+		if jurusanName != "" {
+			title += " - " + jurusanName
+		}
+		title += " (" + bulanLabel + " " + strconv.Itoa(tahun) + ")"
+
+		f.SetCellValue(sheet, "A1", title)
+		f.MergeCell(sheet, "A1", "H1")
+
 		headers := []string{"Nama", "Kelas", "Jurusan", "Hadir", "Telat", "Sakit", "Izin", "Alpa"}
+
 		for i, h := range headers {
-			cell, _ := excelize.CoordinatesToCellName(i+1, 1)
+			cell, _ := excelize.CoordinatesToCellName(i+1, 2)
 			f.SetCellValue(sheet, cell, h)
 		}
 
 		for i, row := range rows {
-			r := i + 2
+			r := i + 3
 			f.SetCellValue(sheet, "A"+strconv.Itoa(r), row.Nama)
 			f.SetCellValue(sheet, "B"+strconv.Itoa(r), row.Kelas)
 			f.SetCellValue(sheet, "C"+strconv.Itoa(r), row.Jurusan)
@@ -193,8 +261,20 @@ func ExportReportBulananKelasExcel(db *gorm.DB) fiber.Handler {
 			f.SetCellValue(sheet, "H"+strconv.Itoa(r), row.Alpa)
 		}
 
+		// NAMA FILE DINAMIS
+
+		filename := "report_" + bulanLabel + "_" + strconv.Itoa(tahun)
+		if kelasName != "" {
+			filename += "_kelas_" + kelasName
+		}
+		if jurusanName != "" {
+			filename += "_" + jurusanName
+		}
+		filename += ".xlsx"
+
 		c.Set("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-		c.Set("Content-Disposition", "attachment; filename=report_bulanan_kelas.xlsx")
+		c.Set("Content-Disposition", "attachment; filename="+filename)
+
 		return f.Write(c)
 	}
 }
