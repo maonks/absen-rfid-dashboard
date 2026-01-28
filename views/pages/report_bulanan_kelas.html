@@ -88,78 +88,82 @@
 
 </style>
 
-
-
-
-
-
-  <h2 class="text-lg font-bold mb-3 screen-only">Report Bulanan Per Kelas</h2>
+<h2 class="text-lg font-bold mb-3 screen-only">Report Bulanan Per Kelas</h2>
 
 <!-- FILTER BAR -->
 <form method="GET"
       action="/report/bulanan/kelas"
-      class="flex flex-wrap items-center gap-2 text-[11px] mb-3 screen-only">
+      class="screen-only w-full mb-3 text-[11px]">
 
-  <!-- KELAS -->
-  <select name="kelas_id" class="border rounded px-2 py-1 bg-white">
-    <option value="">Pilih Kelas</option>
-    {{ range .Kelas }}
-      <option value="{{ .ID }}" {{ if eq $.KelasID .ID }}selected{{ end }}>
-        {{ .Nama }}
-      </option>
-    {{ end }}
-  </select>
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-start gap-2">
 
-  <!-- JURUSAN -->
-  <select name="jurusan_id" class="border rounded px-2 py-1 bg-white">
-    <option value="">Semua Jurusan</option>
-    {{ range .Jurusan }}
-      <option value="{{ .ID }}" {{ if eq $.JurusanID .ID }}selected{{ end }}>
-        {{ .Nama }}
-      </option>
-    {{ end }}
-  </select>
+    <!-- BARIS FILTER -->
+    <div class="flex justify-center gap-2 sm:justify-start">
 
-  <!-- BULAN -->
-  <select name="bulan" class="border rounded px-2 py-1 bg-white">
-    <option value="">Pilih Bulan</option>
-    {{ range .BulanList }}
-      <option value="{{ .Value }}" {{ if eq $.Bulan .Value }}selected{{ end }}>
-        {{ .Label }}
-      </option>
-    {{ end }}
-  </select>
+      <select name="kelas_id" class="border rounded px-2 py-1 bg-white">
+        <option value="">Kelas</option>
+        {{ range .Kelas }}
+          <option value="{{ .ID }}" {{ if eq $.KelasID .ID }}selected{{ end }}>
+            {{ .Nama }}
+          </option>
+        {{ end }}
+      </select>
 
-  <!-- TAHUN -->
-  <select name="tahun" class="border rounded px-2 py-1 bg-white">
-    {{ range .TahunList }}
-      <option value="{{ . }}" {{ if eq $.Tahun . }}selected{{ end }}>
-        {{ . }}
-      </option>
-    {{ end }}
-  </select>
+      <select name="jurusan_id" class="border rounded px-2 py-1 bg-white">
+        <option value="">Jurusan</option>
+        {{ range .Jurusan }}
+          <option value="{{ .ID }}" {{ if eq $.JurusanID .ID }}selected{{ end }}>
+            {{ .Nama }}
+          </option>
+        {{ end }}
+      </select>
 
-  <!-- BUTTON -->
-  <button type="submit"
-          class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800">
-    🔍 Generate
-  </button>
+      <select name="bulan" class="border rounded px-2 py-1 bg-white">
+        <option value="">Bulan</option>
+        {{ range .BulanList }}
+          <option value="{{ .Value }}" {{ if eq $.Bulan .Value }}selected{{ end }}>
+            {{ .Label }}
+          </option>
+        {{ end }}
+      </select>
 
-  <button type="button"
-        onclick="printReport()"
-        class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">
-    🖨️ Print
-  </button>
+      <select name="tahun" class="border rounded px-2 py-1 bg-white">
+        {{ range .TahunList }}
+          <option value="{{ . }}" {{ if eq $.Tahun . }}selected{{ end }}>
+            {{ . }}
+          </option>
+        {{ end }}
+      </select>
 
+    </div>
 
-  {{ if .Rows }}
-  <a href="/report/bulanan/kelas/excel?kelas_id={{.KelasID}}&jurusan_id={{.JurusanID}}&bulan={{.Bulan}}&tahun={{.Tahun}}"
-     class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">
-     📊 Export Excel
-  </a>
-  {{ end }}
+    <!-- BARIS BUTTON -->
+    <div class="flex justify-center gap-2 sm:justify-start">
 
+      <button type="submit"
+              class="px-3 py-1 rounded bg-slate-700 text-white hover:bg-slate-800">
+        🔍 Generate
+      </button>
+
+      <button type="button"
+              onclick="printReport()"
+              class="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">
+        🖨️ Print
+      </button>
+
+      {{ if .Rows }}
+      <button type="button"
+        onclick="window.location.href='/report/bulanan/kelas/excel?kelas_id={{.KelasID}}&jurusan_id={{.JurusanID}}&bulan={{.Bulan}}&tahun={{.Tahun}}'"
+        class="px-3 py-1 rounded bg-green-600 text-white hover:bg-green-700">
+        📊 Excel
+      </button>
+      {{ end }}
+
+    </div>
+
+  </div>
 </form>
+
 
 <div id="print-area">   
   
