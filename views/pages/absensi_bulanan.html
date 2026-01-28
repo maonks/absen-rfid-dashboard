@@ -66,18 +66,6 @@
         <span>Sakit</span>
       </div>
 
-      <button
-        type="button"
-        hx-get="/absensi/bulanan/table-edit"
-        hx-include="#filter-form"
-        hx-target="#absensi-bulanan"
-        hx-swap="innerHTML"
-        class="px-3 py-1 rounded bg-slate-700 text-white"
-      >
-        ✏️ Edit
-      </button>
-
-
     </div>
 
       <!-- ===== FILTER (KANAN) ===== -->
@@ -116,16 +104,30 @@
         🔍 Tampilkan
       </button>
 
+      <button
+        type="button"
+        hx-get="/absensi/bulanan/table-edit"
+        hx-include="#filter-form"
+        hx-target="#absensi-bulanan"
+        hx-swap="innerHTML"
+        class="px-3 py-1 rounded bg-slate-700 text-white"
+      >
+        ✏️ Edit
+      </button>
     </form>
-
 </div>
 
 
- <!-- ===== Tabel 30 Hari ===== -->
-  <div
-    hx-get="/absensi/bulanan/table"
-    hx-trigger="load"
-    hx-swap="innerHTML">
+<!-- ===== Tabel 30 Hari ===== -->
+<div class="relative w-full max-w-full overflow-x-auto border rounded-lg shadow-sm"
+     style="-webkit-overflow-scrolling: touch;">
+
+  <div class="min-w-[1000px]"
+       id="absensi-bulanan"
+       hx-get="/absensi/bulanan/table"
+       hx-trigger="load"
+       hx-swap="innerHTML">
     <!-- di isi oleh data bulanan/table -->
   </div>
+
 </div>
